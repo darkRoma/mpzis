@@ -2,3 +2,5 @@ RewriteEngine On
 RewriteCond %{SCRIPT_FILENAME} !-f
 RewriteCond %{SCRIPT_FILENAME} !-d
 RewriteRule ^(.*)$ index.php?%1
+
+AddType application/octet-stream .doc .mov .avi .pdf .xls 

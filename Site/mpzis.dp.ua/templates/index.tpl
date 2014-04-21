@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name='yandex-verification' content='770d31e7bd4349f9' />
-<base href="http://mpzis.dp.ua">
+<base href="/">
 <link rel='stylesheet' href='templates/style/style.css' type='text/css'>
 <title>
 <?php 
@@ -117,7 +117,7 @@ function romanize (num) {
         }
         if(el==number_of_conf-1)
         {
-          $(this).css('font-size','2em').click(function(){document.location='http://mpzis.dp.ua/'}).css('cursor','pointer');
+          $(this).css('font-size','2em').click(function(){document.location='/'}).css('cursor','pointer');
           $('.title').css('position','absolute').css('left',x+50+$('.years').offset().left).css('top',y+$('.years').offset().top+$(this).height()+50);
         }
       });

@@ -139,6 +139,11 @@
     <label for='index'>Поштовий індекс</label>
     <input id='index' type='text' value='' class='required' name='index'>
     <div class='clear'></div>
+	
+	
+	<label for='nova_poshta_number'>Номер відділення Нової Пошти</label>
+    <input id='nova_poshta_number' type='text' value='' class='required' name='nova_poshta_number'>
+    <div class='clear'></div>
     
     <label for='h_tel'>Домашній телефон (код міста)</label>
     <input id='h_tel' type='text' value='' class='required' name='h_tel'>

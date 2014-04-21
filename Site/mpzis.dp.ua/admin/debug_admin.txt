@@ -1,36 +1,7 @@
-<div class = struct_tab><table><tr ><td>Путь к модулям</td>
-						<td>modules_path</td>
-						<td><a href='javascript: void(0)' onclick='xajax_adm_adm_EchoPreparedTable("1",
-																					"res_out");'>modules</a></td>
-						
-					</tr><tr ><td>Путь к шаблонам</td>
-						<td>templates_path</td>
-						<td><a href='javascript: void(0)' onclick='xajax_adm_adm_EchoPreparedTable("2",
-																					"res_out");'>templates</a></td>
-						
-					</tr><tr ><td>Путь к конфигу</td>
-						<td>conf_path</td>
-						<td><a href='javascript: void(0)' onclick='xajax_adm_adm_EchoPreparedTable("6",
-																					"res_out");'>conf.ini</a></td>
-						
-					</tr><tr ><td>Временная директория</td>
-						<td>tempdir_path</td>
-						<td><a href='javascript: void(0)' onclick='xajax_adm_adm_EchoPreparedTable("7",
-																					"res_out");'>temp</a></td>
-						
-					</tr><tr ><td></td>
-						<td>picdir_path</td>
-						<td><a href='javascript: void(0)' onclick='xajax_adm_adm_EchoPreparedTable("8",
-																					"res_out");'>upload/img</a></td>
-						
-					</tr><tr ><td>Путь к папке с картинками статей</td>
-						<td>atricles_preview_path</td>
-						<td><a href='javascript: void(0)' onclick='xajax_adm_adm_EchoPreparedTable("10",
-																					"res_out");'>upload/img</a></td>
-						
-					</tr><tr ><td>Путь к данным пользователей</td>
-						<td>users_path</td>
-						<td><a href='javascript: void(0)' onclick='xajax_adm_adm_EchoPreparedTable("11",
-																					"res_out");'>users</a></td>
-						
-					</tr></table></div><div id='adm_site_map'></div>
+<a href='javascript: void(0)' onclick='xajax_adm_adm_AddNewUserForm("res_out");')>Add new user</a><div class = 'all_users'><div class='adm_photo'> <img src ='http://ekwo.dp.ua//bomber.gif'</div><div class='adm_fio'> Eugene Kozachenko</div><div class='adm_login'>ekwo</div><div class='adm_access'>Admin</div><div class='adm_e-mail'></div><a href='javascript: void(0)' onclick='xajax_adm_adm_EditUserForm("20",
+																			"res_out");'>Edit</a><a href='javascript: void(0)' onclick='xajax_adm_adm_DeleteUser("20",
+																			"res_out");'>Delete</a><hr><div class='adm_photo'> <img src ='http://mpzis.dp.ua/users/koryashkina.jpg'</div><div class='adm_fio'> Koryashkina L. S.</div><div class='adm_login'>koryashkinals</div><div class='adm_access'>Generaleditor</div><div class='adm_e-mail'>koryshkinals@mail.ru</div><a href='javascript: void(0)' onclick='xajax_adm_adm_EditUserForm("21",
+																			"res_out");'>Edit</a><a href='javascript: void(0)' onclick='xajax_adm_adm_DeleteUser("21",
+																			"res_out");'>Delete</a><hr><div class='adm_photo'> <img src =''</div><div class='adm_fio'> Bord Roman</div><div class='adm_login'>darkRoma</div><div class='adm_access'>Admin</div><div class='adm_e-mail'>darkRoma@inbox.ru</div><a href='javascript: void(0)' onclick='xajax_adm_adm_EditUserForm("3",
+																			"res_out");'>Edit</a><a href='javascript: void(0)' onclick='xajax_adm_adm_DeleteUser("3",
+																			"res_out");'>Delete</a><hr></div>

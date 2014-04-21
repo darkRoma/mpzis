@@ -1,6 +1,6 @@
 <html>
 <head>
-<base href="http://mpzis.dp.ua">
+<base href="/">
 <link rel='stylesheet' href='templates/style/style.css' type='text/css'>
 <title>Сторінку не знайдено</title>
 <script type='text/javascript' src='templates/js/jquery.js'></script>
@@ -92,7 +92,7 @@ function romanize (num) {
         }
         if(el==number_of_conf-1)
         {
-          $(this).css('font-size','2em').click(function(){document.location='http://mpzis.dp.ua/'}).css('cursor','pointer');
+          $(this).css('font-size','2em').click(function(){document.location='/'}).css('cursor','pointer');
           $('.title').css('position','absolute').css('left',x+50+$('.years').offset().left).css('top',y+$('.years').offset().top+$(this).height()+50);
         }
       });
@@ -100,7 +100,7 @@ function romanize (num) {
     //eo years builder
     $('ul.small_links a').each(function(){
       var srt=document.location.href;
-      srt=srt.replace('http://mpzis.dp.ua/','');
+      srt=srt.replace('/','');
       if($(this).attr('href')==srt) $(this).parent().css('display','none');
     });
   });

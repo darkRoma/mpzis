@@ -68,6 +68,20 @@ $register_INFO["TABLES"]["workers"]	= array("name"=>"register","title" => "Та�
 				break;			
 			}
 			
+			case "del_all_quest":
+			{
+			    $out .= reg_del_all_quest();
+				break;
+			}
+
+            case "del_all":
+            {
+				$out .= reg_delete_all();
+				
+				$out .= reg_DisplayTab( $c );	
+				break;
+            }
+
 			case "edit_form":
 			{
 				$out .= reg_EditForm($u['id'],$c);
@@ -81,7 +95,7 @@ $register_INFO["TABLES"]["workers"]	= array("name"=>"register","title" => "Та�
 				$sql = new cMysql($c["sql_host"],$c["sql_db"],$c["sql_login"],$c["sql_pass"]);
 				$tab = "mpzis_register";
 				
-				$s = "UPDATE $tab SET `science`='{$u["science"]}',`surname`='{$u["surname"]}',`name`='{$u["name"]}',`f_name`='{$u["f_name"]}',`kaf`='{$u["kaf"]}',`place`='{$u["place"]}',`who`='{$u["who"]}',`h_addr`='{$u["h_addr"]}',`city`='{$u["city"]}',`country`='{$u["country"]}',`index`='{$u["index"]}',`h_tel`='{$u["h_tel"]}',`w_tel`='{$u["w_tel"]}',`email`='{$u["email"]}',`r_name`='{$u["r_name"]}',`lang`='{$u["lang"]}',`section`='{$u["section"]}',`rep_type`='{$u["rep_type"]}' 
+				$s = "UPDATE $tab SET `science`='{$u["science"]}',`surname`='{$u["surname"]}',`name`='{$u["name"]}',`f_name`='{$u["f_name"]}',`kaf`='{$u["kaf"]}',`place`='{$u["place"]}',`who`='{$u["who"]}',`h_addr`='{$u["h_addr"]}',`city`='{$u["city"]}',`country`='{$u["country"]}',`index`='{$u["index"]}',`nova_poshta_number`='{$u["nova_poshta_number"]}',`h_tel`='{$u["h_tel"]}',`w_tel`='{$u["w_tel"]}',`email`='{$u["email"]}',`r_name`='{$u["r_name"]}',`lang`='{$u["lang"]}',`section`='{$u["section"]}',`rep_type`='{$u["rep_type"]}' 
 				WHERE `id` = {$u["id"]}";
 //						mysql_query("SET NAMES 'utf8'");
 				//$s = iconv("UTF-8","windows-1251",$s);
@@ -170,6 +184,10 @@ $register_INFO["TABLES"]["workers"]	= array("name"=>"register","title" => "Та�
     <input id='index' type='text' value='".$ret['index']."' name='index'>
     <div class='clear'></div>
     
+    <label for='nova_poshta_number'>Номер складу Нової Пошти</label>
+    <input id='nova_poshta_number' type='text' value='".$ret['nova_poshta_number']."' name='nova_poshta_number'>
+    <div class='clear'></div>
+	
     <label for='h_tel'>Домашній телефон (код міста)</label>
     <input id='h_tel' type='text' value='".$ret['h_tel']."' name='h_tel'>
     <div class='clear'></div>
@@ -203,7 +221,7 @@ $register_INFO["TABLES"]["workers"]	= array("name"=>"register","title" => "Та�
     //(science,surname,name,f_name,kaf,place,who,h_addr,city,country,`index`,h_tel,w_tel,email,r_name,lang,file_upl,section,reg_type) 
     
     	
-    	$l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\",\"science\",\"surname\",\"name\",\"f_name\",\"kaf\",\"place\",\"who\",\"h_addr\",\"city\",\"country\",\"index\",\"h_tel\",\"w_tel\",\"email\",\"r_name\",\"lang\",\"section\",\"rep_type\",\"id\"],[\"edit\",\"register\",z(\"science\"),z(\"surname\"),z(\"name\"),z(\"f_name\"),z(\"kaf\"),z(\"place\"),z(\"who\"),z(\"h_addr\"),z(\"city\"),z(\"country\"),z(\"index\"),z(\"h_tel\"),z(\"w_tel\"),z(\"email\"),z(\"r_name\"),z(\"lang\"),z(\"section\"),z(\"rep_type\"),\"$id\"]);'";
+    	$l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\",\"science\",\"surname\",\"name\",\"f_name\",\"kaf\",\"place\",\"who\",\"h_addr\",\"city\",\"country\",\"index\",\"nova_poshta_number\",\"h_tel\",\"w_tel\",\"email\",\"r_name\",\"lang\",\"section\",\"rep_type\",\"id\"],[\"edit\",\"register\",z(\"science\"),z(\"surname\"),z(\"name\"),z(\"f_name\"),z(\"kaf\"),z(\"place\"),z(\"who\"),z(\"h_addr\"),z(\"city\"),z(\"country\"),z(\"index\"),z(\"nova_poshta_number\"),z(\"h_tel\"),z(\"w_tel\"),z(\"email\"),z(\"r_name\"),z(\"lang\"),z(\"section\"),z(\"rep_type\"),\"$id\"]);'";
     	
 		$out .= "<a href = $l>Принять</a>";
     	
@@ -309,7 +327,11 @@ $register_INFO["TABLES"]["workers"]	= array("name"=>"register","title" => "Та�
 		}
 		
 	$out .= "</table>";
-      	$out2 .= "</table>";
+
+		$l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\",\"id\"],[\"del_all_quest\",\"register\",\"{$kor["id"]}\"]);'"; 
+		$out2 .= "<a href = $l> Удалить все</a>";
+      	
+        $out2 .= "</table>";
       	return $out.$out2;
       }
       
@@ -343,12 +365,37 @@ $register_INFO["TABLES"]["workers"]	= array("name"=>"register","title" => "Та�
 		
       }
       
+	  function reg_delete_all()
+	{
+     	$eng = new Engine;
+		$c = $eng->InitConf('conf.ini');
+		$sql = new cMysql($c["sql_host"],$c["sql_db"],$c["sql_login"],$c["sql_pass"]);
+		$tab = "mpzis_register";
+		$s = "delete from  $tab";
+		$sql->query($s,false,'UTF8');
+	}
+
       function reg_del_quest($id)
       {
       	
       	$out .= "Удаление $id. Вы уверены?";
       	
       	$l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\",\"id\"],[\"del\",\"register\",\"$id\"]);'";
+      	$out .= "<a href = $l>Да</a>;&nbsp&nbsp";
+      	
+      	$l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\"],[\"view\",\"register\"]);'";
+      	$out .= "<a href = $l>Нет</a>";
+      	
+      	return $out;
+		      	
+      }
+
+      function reg_del_all_quest()
+      {
+      	
+      	$out .= "Удаление всех участников. Вы уверены?";
+      	
+      	$l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\",\"id\"],[\"del_all\",\"register\",\"$id\"]);'";
       	$out .= "<a href = $l>Да</a>;&nbsp&nbsp";
       	
       	$l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\"],[\"view\",\"register\"]);'";

@@ -12,7 +12,7 @@ require("../../include/core.php");
 	
 	$file = UploadFiles($tab);
 	
-	header("location: http://mpzis.dp.ua/result");	
+	header("location: /result");	
 	//print_r($_POST);
 	
 //( [science] => [surname] => [name] => [f_name] => [kaf] => [place] => [who] => [h_addr] => [city] => [country] => [index] => [h_tel] => [w_tel] => [email] => [r_name] => [lang] => )
@@ -23,8 +23,8 @@ require("../../include/core.php");
 */
 
 $s = "insert into $tab
-	 (science,surname,name,f_name,kaf,place,who,h_addr,city,country,`index`,h_tel,w_tel,email,r_name,lang,file_upl,section,rep_type) 
-	values('{$_POST['science']}','{$_POST['surname']}','{$_POST['name']}','{$_POST['f_name']}','{$_POST['kaf']}','{$_POST['place']}','{$_POST['who']}','{$_POST['h_addr']}','{$_POST['city']}','{$_POST['country']}','{$_POST['index']}','{$_POST['h_tel']}','{$_POST['w_tel']}','{$_POST['email']}','{$_POST['r_name']}','{$_POST['lang']}','$file','{$_POST['section']}','{$_POST['rep_type']}' )";
+	 (science,surname,name,f_name,kaf,place,who,h_addr,city,country,`index`,nova_poshta_number,h_tel,w_tel,email,r_name,lang,file_upl,section,rep_type) 
+	values('{$_POST['science']}','{$_POST['surname']}','{$_POST['name']}','{$_POST['f_name']}','{$_POST['kaf']}','{$_POST['place']}','{$_POST['who']}','{$_POST['h_addr']}','{$_POST['city']}','{$_POST['country']}','{$_POST['index']}','{$_POST['nova_poshta_number']}','{$_POST['h_tel']}','{$_POST['w_tel']}','{$_POST['email']}','{$_POST['r_name']}','{$_POST['lang']}','$file','{$_POST['section']}','{$_POST['rep_type']}' )";
 	
 
 	
@@ -130,6 +130,8 @@ function BurnPost()
 		$_POST['country'] 	= $eng->Burn($_POST['country'],20);
 		
 		$_POST['index'] 	= $eng->Burn($_POST['index'],10);
+		
+		$_POST['nova_poshta_number'] 	= $eng->Burn($_POST['nova_poshta_number'],10);
 		
 		$_POST['h_tel']		= $eng->Burn($_POST['h_tel'],20);
 		
