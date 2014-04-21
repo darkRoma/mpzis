@@ -1,0 +1,59 @@
+input[type=text]{
+  width: 200px;
+}
+select{
+  width: 200px;
+}
+textarea{
+  width: 410px;
+}
+input.disabled {
+	border: 1px solid #F2F2F2;
+	background-color: #F2F2F2;
+}
+
+input.required, textarea.required {
+}
+input.validation-failed, textarea.validation-failed {
+	border: 1px solid #FF3300;
+	color : #FF3300;
+}
+input.validation-passed, textarea.validation-passed {
+	color : #000;
+}
+
+.validation-advice {
+	margin: 5px 0;
+	padding: 5px;
+	background: transparent;
+	color : #e55b2b;
+	font-family: Verdana;
+	font-size: 0.8em;
+	font-weight: bold;
+	margin-left: 410px;
+	margin-top: 0px;
+	height: 17px;
+}
+
+.custom-advice {
+	margin: 5px 0;
+	padding: 5px;
+	background-color: #C8AA00;
+	color : #FFF;
+	font-weight: bold;
+}
+
+
+
+.form-row {
+	clear: both;
+	padding: 0.5em;
+}
+
+.field-label {
+
+}
+
+.field-widget {
+
+}

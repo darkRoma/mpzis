@@ -1,0 +1,36 @@
+<div class = struct_tab><table><tr ><td>Путь к модулям</td>
+						<td>modules_path</td>
+						<td><a href='javascript: void(0)' onclick='xajax_adm_adm_EchoPreparedTable("1",
+																					"res_out");'>modules</a></td>
+						
+					</tr><tr ><td>Путь к шаблонам</td>
+						<td>templates_path</td>
+						<td><a href='javascript: void(0)' onclick='xajax_adm_adm_EchoPreparedTable("2",
+																					"res_out");'>templates</a></td>
+						
+					</tr><tr ><td>Путь к конфигу</td>
+						<td>conf_path</td>
+						<td><a href='javascript: void(0)' onclick='xajax_adm_adm_EchoPreparedTable("6",
+																					"res_out");'>conf.ini</a></td>
+						
+					</tr><tr ><td>Временная директория</td>
+						<td>tempdir_path</td>
+						<td><a href='javascript: void(0)' onclick='xajax_adm_adm_EchoPreparedTable("7",
+																					"res_out");'>temp</a></td>
+						
+					</tr><tr ><td></td>
+						<td>picdir_path</td>
+						<td><a href='javascript: void(0)' onclick='xajax_adm_adm_EchoPreparedTable("8",
+																					"res_out");'>upload/img</a></td>
+						
+					</tr><tr ><td>Путь к папке с картинками статей</td>
+						<td>atricles_preview_path</td>
+						<td><a href='javascript: void(0)' onclick='xajax_adm_adm_EchoPreparedTable("10",
+																					"res_out");'>upload/img</a></td>
+						
+					</tr><tr ><td>Путь к данным пользователей</td>
+						<td>users_path</td>
+						<td><a href='javascript: void(0)' onclick='xajax_adm_adm_EchoPreparedTable("11",
+																					"res_out");'>users</a></td>
+						
+					</tr></table></div><div id='adm_site_map'></div>

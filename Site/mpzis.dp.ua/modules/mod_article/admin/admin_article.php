@@ -1,0 +1,1106 @@
+<?php
+/**
+ * Инфо модуля
+ * 
+ * 
+ * */
+	
+
+	$article_INFO["name"] 				= "article";
+	$article_INFO["title"] 				= "Модуль Статьи";
+	$article_INFO["version"] 			= 1.0;
+	$article_INFO["comment"] 			= "admin for module articles (demo version)";
+	$article_INFO["group"] 				= "left";
+	$article_INFO["function"]			= "admin_article";
+	
+	$article_INFO["ACCESS"]["r"]["E"] 	= 1;
+	$article_INFO["ACCESS"]["r"]["GE"] 	= 1;
+	$article_INFO["ACCESS"]["w"]["E"] 	= 1;
+	$article_INFO["ACCESS"]["w"]["GE"] 	= 1;
+	$article_INFO["ACCESS"]["a"]["E"] 	= 1;
+	$article_INFO["ACCESS"]["a"]["GE"] 	= 1;
+
+
+     function admin_article($u_n,$u_a,$tpl_n,$tpl_a,$c_n,$c_a)
+	 {
+  		$flag 	= false;
+  		$obj 	= new xajaxResponse();
+  		
+     	$eng 	= new Engine;
+     	$u 		= $eng->TransArgs($u_n,$u_a);
+     	$tpl 	= $eng->TransArgs($tpl_n,$tpl_a);
+     	$c		= $eng->TransArgs($c_n,$c_a);
+/*---------------------------------------------------------------------------------*/
+		$sql = new cMysql($c["sql_host"],$c["sql_db"],$c["sql_login"],$c["sql_pass"]);
+		$tab = $c["sql_struct_tab"];
+		
+/*------------------ DEBUG -------------------------------------------*/
+     //	$s = "INPUT: U(";
+	//	while(list($k,$v) = each($u))
+	//		$s.="[$k]=>`$v` \n";
+/*
+		$s .=") TPL(";
+
+		while(list($k,$v) = each($tpl))
+			$s.="[$k]=>`$v` \n";
+	    $s .=") CORE(";
+
+
+	    while(list($k,$v) = each($c))
+			$s.="[$k]=>`$v` \n";
+	    $s .= ")";
+	   
+	   	$s .= "   SESSION("; 
+		while(list($k,$v) = each($_SESSION))
+			$s.="[$k]=>`$v` \n";
+	    $s .= ")";
+/*---------------------------------------------------- END DEBUG -------------------------------------------------*/
+
+/*--------------------------------------------  MENU ---------------------------------------------*/
+		
+		if($_SESSION['access'] != 'Editor')
+		{
+			$link = $u["tpl_path"];		// путь к шаблону
+			$s .= "<a class='rounded {trancparent} articles_create_new' href='javascript: void(0)' onclick='xajax_parser([\"tpl_path\",\"cmd\",\"page\"],
+																[\"$link\",\"add\",\"".$u["page"]."\"]);'>
+			Создать новую
+			</a>";
+		}
+		
+		$l = "'javascript: void(0)' onclick='xajax_parser([\"tpl_path\",\"page\"],[\"$link\",\"".$u['page']."\"]);'";
+		$s .= "<a href=$l>Все статьи</a>";
+		
+	
+/*-------------------------------------------- END MODULE MENU --------------------------------*/
+
+/*-------------------------------------------------- ADMIN FUNCTIONS -----------------------------------------------------*/
+     	switch($u["cmd"])
+     	{
+     		case "add":  /* мы хотим создать новую статью => Вывести формы куда вводить новые данные*/
+     		{
+     		    $s .= adm_art_AddNew_Form($u,$c);
+     		    
+     		    $flag = true;
+     			break;
+     		}
+     		case "update": /*Мы уже ввели данные новой статьи и хотим добавть ее в БД*/
+     		{
+                //$s .= adm_art_UpdateDB($u);
+     			break;
+     		}
+     		case "delete":
+     		{
+                adm_art_Delete($u,$c);
+     			break;
+     		}
+     		case "edit":  /*мы редактируем статью*/
+     		{
+     		    $s .= adm_art_AddNew_Form($u,$c,true);
+     		    $flag = true;
+     			break;
+     		}
+     	}
+/*------------------------------------------- END ADMIN FUNCTIONS -----------------------------------------------------*/
+/*------------------------------------------- MODULE FUNCTIONS --------------------------------------------------------*/
+	if( $flag == false )
+	{
+       if(isset($tpl["title"])){
+			$ret = adm_art_get_title($c,$u);
+			
+			$s.= $ret;
+        	//print "$s"; // <<<+++ ВОТ ЭТОТ!!!!!!!!!!!!
+     		$flag = true;
+		}
+
+		if( $flag == false )
+		{
+			if ( !isset($u["art"]))  // вывести список
+			{
+				 $ret = adm_art_echo_all($u,$tpl,$c);
+				 /*вывести списиок категорий в слайде*/
+				 $str = adm_art_IntoDynamic($u);
+				 $obj->addscript("xajax_adm_WriteDynamicPart(\"".$u['page']."\",\"$str\")");
+			}
+			else   					//одна статья
+			{
+	            $ret = adm_art_echo_singl($u,$c) ;
+			}
+		}
+
+
+        $s.= $ret;
+    }
+    
+/*------------------------------------------------ END MODULE FUNCTIONS --------------------------------------------------------*/
+        
+		$__f = fopen("debug_article.txt","w");
+        fwrite($__f,$s);
+        fclose($__f);
+
+/*------------------------------------------------------- OUTPUT --------------------------------------------------------------*/
+		
+		
+		
+		
+		//$obj->addalert($u_a);
+		
+		//$obj->addscript('chiliFilterData("xajax_adm_art_filter");');
+		$obj->setCharEncoding('windows-1251');
+		//$obj->addscript("xajax_adm_WriteDynamicPart(\"".$u['page']."\",\"$str\")");
+		$obj->addassign($u['result'],'innerHTML',$s);
+			$obj->addscript("$('input').each(function(el){
+  if (this.title!='')
+  {
+    var sp=$('<span></span>').attr('innerHTML',this.title).css('position','absolute').css('left',$(this).position().left+$(this).innerWidth()+20).css('top',$(this).position().top).attr('class','form_helper');
+    $('#result').append(sp);
+  }
+});");
+if ($u['cmd']=='add' || $u['cmd']=='edit'){
+		$obj->addscript("	var sBasePath = 'include/js/fckeditor/' ;
+	var oFCKeditor = new FCKeditor( 'n_text' ) ;
+	oFCKeditor.BasePath	= sBasePath ;
+	//oFCKeditor.Config['SkinPath'] = '/chili/' ;
+	//oFCKeditor.Config['SkinPath'] =  'skins/ChroomDeluxe/' ;
+	oFCKeditor.Config['TemplatesXmlPath']  =  '../fcktemplates.xml' ;
+	oFCKeditor.ReplaceTextarea() ;");
+		}
+		$obj->addscript(
+      "
+    $('.delete').each(function(el){
+      $(this).click(function(){
+        if($(this).attr('alt')==0)
+        {
+          $('.delete').attr('alt',0);
+          $('.delete').css('font-size','0.8em');
+          $('.delete').css('color','#00f');
+          $(this).attr('alt',1);
+          $(this).css('font-size','2em');
+          $(this).css('color','#f00');
+          return false;
+        }else{
+          eval(\$(this).attr('title'));
+          return true;
+        }
+      });
+      $(this).attr('alt',0);
+    });
+      "
+    );
+    /**
+     *  transliting JQuery code for title and url
+     */         
+    $obj->addscript('
+      $("#n_title").blur(function(){xajax_translit($(this).val(),"article_url","value");});
+      $("#article_url").blur(function(){xajax_translit($(this).val(),"article_url","value");});
+    ');
+		return $obj;
+     }
+     $xajax->registerFunction('adm_art_SetVisSetCat');
+     $xajax->registerFunction('adm_art_SetVisSet');
+     $xajax->registerFunction('adm_art_UpdateDB');
+     $xajax->registerFunction('adm_art_filter');
+	 $xajax->registerFunction('adm_art_EditArt');
+     
+
+?>
+<?php
+
+/*-----------------------------------------------------------------------------------------------------------
+Админские функции
+-----------------------------------------------------------------------------------------------------------*/
+/*Filter on articles !!!XAJAX FUNCTION*/
+
+	function adm_art_filter($auth,$cat,$date,$tpl_path,$page)
+	{	
+		$s = "";
+		$a = "";
+		$d = "";
+		
+		foreach( $auth as $val)
+		{
+			$arr = explode("_",$val);
+			$a 	.= $arr[1].";";
+		}
+				
+		
+		foreach( $cat as $val)
+		{
+			list(,$v) = explode("_",$val);
+			$s 	.= $v.";";
+		}
+		
+		
+		//print_r($date);
+		foreach( $date as $val)
+		{
+			if(!preg_match("/\d{4}-\d{2}-\d{2}/",$val)) break;
+			$d 	.= $val.";";	
+		}
+		
+		$s = trim($s,';');
+		$a = trim($a,';');
+		$d = trim($d,';');
+		
+		
+		
+		//print "$s<br>";
+		//print "$a<br>";
+		//print "$d<br>";
+		
+		
+		$obj = new xajaxResponse();
+		//$obj->addalert($tpl_path);
+		//$obj->addalert($d);
+		
+		/*$obj->addalert("<script>xajax_parser([\"tpl_path\",\"page\",\"sort\",\"auth\",\"date\"],
+									[$tpl_path,$page,$s,$a,$d]);</script>");
+		*/							
+		$obj->addscript("xajax_parser([\"tpl_path\",\"page\",\"sort\",\"author\",\"date\"],
+									[\"$tpl_path\",\"$page\",\"$s\",\"$a\",\"$d\"]);");
+									
+		return $obj;
+		
+	}	
+/*-------------------------------------------------------------------------------------*/
+	function adm_art_EditArt($a)
+	{
+		$obj = new xajaxResponse();
+		$obj->addalert($a);
+		//$obj->addalert($cat);
+		//$obj->addalert($date);
+		return $obj;
+	}
+
+/*-------------------------------------------------------------------------------------*/
+		
+	/*
+		Ф-ция создает форму для ввода новых данных
+	    Или для редактирования ранее созданной статьи
+	    
+		cmd = add
+	    cmd = edit
+	      
+	*/		
+	
+  function adm_art_AddNew_Form($u,$c,$edit=false)
+	{
+        $page= $u["page"];
+        $art = $u["lid"];
+		
+		$tab = $c["sql_main_tab"];
+		$tab2 = $c["sql_struct_tab"];
+
+
+		$sql = new cMysql($c["sql_host"],$c["sql_db"],$c["sql_login"],$c["sql_pass"]);
+		
+
+		if( $edit ) // edit///
+		{
+		    
+
+			$s = "SELECT * FROM $tab WHERE `type`='article' AND `v7`='$page' AND `lid`=$art";
+
+			$row = $sql->query($s,true);
+			$s='';
+/*--------------------------------- PICTURES UPLOADER ------------------------------------------------*/
+    if(empty($row['v2']))$row['v2']='../../../upload/img/default.jpg';
+			$out .= "
+			
+				<div id='picture'>
+					<img src='{$row[v2]}' id='art_prev_pic'>
+					<br><a href='javascript: void(0)' onclick='chiliShowPicSelect();'>Настроить</a>
+				</div>
+				<div id='picsSelector' style='display: none' >
+					<div id='pics'>";
+/*----------------------------------- GET LODED PICTURES INTO LIST ------------------------------------------*/
+				$s = "SELECT `c_value` FROM $tab2 WHERE `c_id` = 'atricles_preview_path'";
+				$ret = $sql->query($s,true);
+				
+				 $h   = opendir("../$ret[c_value]");
+						
+				$i=1;
+				while ($file = readdir($h))
+				{
+					if(!is_dir($file))
+					{
+						$out .="<img src='../$ret[c_value]/$file' id=$i>";
+						$i++;
+					}
+				}
+					
+/*----------------------------------- END GET LODED PICTURES INTO LIST ------------------------------------------*/
+			$out .="
+						
+					</div>
+					<div id=settings>sets go here
+					<input type='text' id='art_prev_pic_URL'>
+					</div>
+					<div id='uploader'>
+						<iframe src=''id='frame' name='ffr'></iframe>
+						<form enctype='multipart/form-data' action='../modules/mod_article/admin/upload.php' method='post' id='uplForm'>
+							<input type='file' name='file'>
+							<input type='submit'>
+						</form>
+					</div>
+				</div>
+						
+				
+				";
+			
+/*--------------------------------- END PICTURES UPLOADER ------------------------------------------------*/
+$seo_title=$row['title'];
+$seo_tags=$row['tags'];
+$seo_desc=$row['description'];
+$out .= "
+<fieldset><legend>SEO</legend>
+<label for='adm_seo_title'>Заголовок:</label><input id='adm_seo_title' value='$seo_title'><br />
+<label for='adm_seo_tags'>Тэги:</label><input id='adm_seo_tags' value='$seo_tags'><br />
+<label for='adm_seo_desc'>Описание:</label><input id='adm_seo_desc' value='$seo_desc'><br />
+</fieldset>
+<fieldset><legend>Изменить статью</legend>";
+
+
+	        $out .= "<input id=\"page\" type=\"hidden\" value=\"$page\">\n";
+            $out .= "<input id=\"lid\" type=\"hidden\" value=\"$art\">\n";
+            
+			//$out .= "<input name=\"art_prev_pic_upload\" type=\"hidden\" value=\"WRONG\">\n";
+			
+	        $out.= "<label for='n_title'>Заголовок:</label>";
+			$out.= "<input id=\"n_title\" type=\"text\" value='".$row["v1"]."'><br>\n";
+			/**
+			 * ekwo UPD
+			 * article titles in UPLs			 
+			 */       			
+			 $article_title=$row['v9'];
+			$out.="<label for='article_url' style='width: auto;'>http://".$_SERVER['HTTP_HOST']."/$page/</label><input type='text' id='article_url' name='article_url' value='$article_title' title='Русские буквы не разрешены, и будут транслитерированы!'><div class='clear'></div>";
+      /**
+       *  visibility
+       */             
+      $visib=$row['v8'];
+      if($visib=='true')$visib='checked';else $visib='';
+      $out.="<label for='article_visibility'><input type='checkbox' id='article_visibility' name='article_visibility' $visib> показвать статью</label>";
+			$out.= "<textarea id=\"n_text\" name=\"n_text\" rows=30 cols=50 wrap=\"off\">".$row["v3"]."</textarea><br>\n";
+		
+			
+			$out.= "<label for='n_date'>Дата:</label>";
+			$out.= "<input id=\"n_date\" type=\"text\" value='".$row["v5"]."'><br>\n";
+			$out.= "<label for='n_category'>Категория:</label>";
+			$out.= "<input id=\"n_category\" type=\"text\" value='".$row["v6"]."'><br>\n";
+	        $t="var oEditor = FCKeditorAPI.GetInstance('n_text'); var text=oEditor.GetXHTML( true );";
+	        $inp = "'edit','$page',document.getElementById('art_prev_pic_URL').value,
+								document.getElementById('n_title').value,
+								text,
+								document.getElementById('n_category').value,
+								document.getElementById('n_date').value,
+								document.getElementById('tpl_path').innerHTML,
+								document.getElementById('lid').value,
+                document.getElementById('article_visibility').checked,
+                document.getElementById('article_url').value,document.getElementById('adm_seo_title').value,document.getElementById('adm_seo_desc').value,document.getElementById('adm_seo_tags').value";
+	        
+	        
+			$l = "href='javascript: void(0)' onclick=\"$t xajax_adm_art_UpdateDB($inp);\"";
+			
+			$out.= "<a class='rounded' $l>Сохранить</a>";
+			
+	        
+
+	        
+        }else{
+
+/*-------------------------------------------------------------------------------------------------------*/        	
+/*-------------------------------- СОЗДАНИЕ НОВОЙ СТAТЬИ -----------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------*/
+
+
+/*--------------------------------- PICTURES UPLOADER ------------------------------------------------*/
+$out .= "
+			
+				<div id='picture'>
+					<img src='../upload/img/default.jpg' id='art_prev_pic'>
+					<br><a href='javascript: void(0)' onclick='chiliShowPicSelect();'>Настроить</a>
+				</div>
+				<div id='picsSelector' style='display: none' >
+					<div id='pics'>";
+/*----------------------------------- GET LODED PICTURES INTO LIST ------------------------------------------*/
+				$s = "SELECT `c_value` FROM $tab2 WHERE `c_id` = 'atricles_preview_path'";
+				$ret = $sql->query($s,true);
+				 $h   = @opendir("../{$ret[c_value]}");
+						
+				$i=1;
+				while ($file = @readdir($h))
+				{
+					if(!is_dir($file) && $file!='default.jpg')
+						$out .="<img src='../{$ret[c_value]}/$file' id=$i>";
+				}
+					
+/*----------------------------------- GET LODED PICTURES INTO LIST ------------------------------------------*/						
+			$out .="
+						
+					</div>
+					<div id=settings>sets go here
+					<input type='text' id='art_prev_pic_URL'>
+					</div>
+					<div id='uploader'>
+						<iframe src=''id='frame' name='ffr'></iframe>
+<form enctype='multipart/form-data' action='../modules/mod_article/admin/upload.php' method='post' id='uplForm'>
+							<input type='file' name='file'>
+							<input type='submit'>
+						</form>
+					</div>
+				</div>
+						
+				
+				";
+
+
+/*--------------------------------- PICTURES UPLOADER ------------------------------------------------*/			
+$out.= "
+<fieldset><legend>SEO</legend>
+<label for='adm_seo_title'>Заголовок:</label><input id='adm_seo_title' value=''><br />
+<label for='adm_seo_tags'>Тэги:</label><input id='adm_seo_tags' value=''><br />
+<label for='adm_seo_desc'>Описание:</label><input id='adm_seo_desc' value=''><br />
+</fieldset>
+<fieldset><legend>Добавить статью</legend>";
+	        $out .= "<input name=\"page\" type=\"hidden\" value=\"$page\">\n";
+			//$out .= "<input name=\"cmd\" type=\"hidden\" value=\"new\">\n";
+
+	        $out.= "<label for='n_title'>Заголовок:</label>";
+			$out.= "<input id=\"n_title\" type=\"text\" value=\"\"><br>\n";		
+      			/**
+			 * ekwo UPD
+			 * article titles in UPLs			 
+			 */       			
+			$out.="<label for='article_url' style='width: auto;'>http://".$_SERVER['HTTP_HOST']."/$page/</label><input type='text' id='article_url' name='article_url' value='' title='Русские буквы не разрешены, и будут транслитерированы!'><div class='clear'></div>";
+			/**
+			 * visibility
+			 */       			
+      $out.="<label for='article_visibility'><input type='checkbox' id='article_visibility' name='article_visibility' checked> показвать статью</label>";
+      	$out.= "<textarea id=\"n_text\" rows=30 cols=50 wrap=\"off\"></textarea><br>\n";
+			$out.= "<label for='n_category'>Категория:</label>";
+	        $out.= "<input id=\"n_category\" type=\"text\" value=\"\"><br>\n";
+	        
+			//function adm_art_UpdateDB($cmd,$page,$pic,$title,$text,$category)
+				        $t="var oEditor = FCKeditorAPI.GetInstance('n_text'); var text=oEditor.GetXHTML( true );";
+			$inp = "'new','$page',document.getElementById('art_prev_pic_URL').value,
+								document.getElementById('n_title').value,
+								text,
+								document.getElementById('n_category').value,
+								0,
+								document.getElementById('tpl_path').innerHTML,
+								0,document.getElementById('article_visibility').checked,document.getElementById('article_url').value,document.getElementById('adm_seo_title').value,document.getElementById('adm_seo_desc').value,document.getElementById('adm_seo_tags').value";
+	        
+	        
+			$l = "href='javascript: void(0)' onclick=\"$t xajax_adm_art_UpdateDB($inp);\"";
+				$out.= "<a class='art_save' $l>Сохранить</a>";	        
+//$out.= "<input type=\"submit\" value=\"Create\" onclick='xajax_parser([\"tpl_path\",\"page\"],[\"$link\",\"$page\"]'>\n";
+	       
+
+        }
+        
+		//$out .= $l;
+$out.='</fieldset>';
+		return $out;
+	}
+
+	/*
+		Удаляет статью из базы
+	*/
+	function adm_art_Delete($u,$c)
+	{
+		$eng = new Engine();
+		
+		
+		$lid = $u["lid"];
+		$page= $u["page"];
+
+		$link = $c["tpl_path"];
+		$page = $u["page"];
+        $pos = $u["pos"];
+
+		$sql = new cMysql($c["sql_host"],$c["sql_db"],$c["sql_login"],$c["sql_pass"]);
+		$tab = $c["sql_main_tab"];
+
+		$s = "DELETE  FROM $tab WHERE `type`='article' AND `lid`=$lid AND `v7`='$page'";
+
+		$sql->query($s);
+$s='';
+		//$out .= "<script>xajax_parser([\"tpl_path\",\"page\",\"pos\",\"fuck\"],[\"$link\",\"$page\",$pos,\"fuck\"]);</script>";
+//----------------------------- STATISTIC ----------------------------------------------------//
+
+/*
+		$arg = $eng->PrepareStatArgs('article','delete',array( "v1" => $_SESSION['login'],
+																		 "v2" => $page,
+																		 "v3" => $lid,
+																		 "v4" => "",
+																		 "v5" => "",
+																		 "v6" => "",
+																		 "v7" => "",
+																		 "v8" => date("Y-d-m")
+																		));
+		adm_stat_AddToDB($arg);		
+*/
+		return $out;
+	}
+	
+	        
+	/*Создает новую статью или редактирует существующую */
+	function adm_art_UpdateDB($cmd,$page,$pic,$title,$text,$category,$date,$link,$lid,$visibility,$url,$stitle,$stags,$sdesc)
+	//function adm_art_UpdateDB($cmd)
+	{
+		$eng = new Engine;
+		$c = $eng->InitConf('conf.ini');
+		include("updatedb.php");
+		
+		$title = iconv("UTF-8","windows-1251",$title);
+		$stitle = iconv("UTF-8","windows-1251",$stitle);
+		$stags = iconv("UTF-8","windows-1251",$stags);
+		$sdesc = iconv("UTF-8","windows-1251",$sdesc);
+		$text = iconv("UTF-8","windows-1251",$text);
+		$category = iconv("UTF-8","windows-1251",$category);
+		//$u['page'] 		= $page;
+		//$u['tpl_path']	= $link;
+	//	$s="xajax_parser([\"tpl_path\",\"page\"],[\"$link\",\"".$u['page']."\"]);'";
+	$s='';
+		$l = "xajax_parser([\"tpl_path\",\"page\"],[\"$link\",\"".$page."\"]);";
+		//$s .= "<a href=$l>Все статьи</a>"; 
+		switch ( $cmd )
+		{
+		    case "new":
+		    {
+		    	__new($page,$pic,$title,$text,$category,$url,$visibility,$stitle,$sdesc,$stags);
+				
+				$u['page'] 		= $page;
+				$u['tpl_path']	= $link;
+				//$s .= "adm_art_echo_all($u,{$u["tpl_path"]},$c)";
+				
+//----------------------------- STATISTIC ----------------------------------------------------//
+/*
+				$arg = $eng->PrepareStatArgs('article','new',array( "v1" => $_SESSION['login'],
+																		 "v2" => $page,
+																		 "v3" => $title,
+																		 "v4" => $category,
+																		 "v5" => "ссылка на статью",
+																		 "v6" => date("Y-d-m"),
+																		 "v7" => "",
+																		 "v8" => date("Y-d-m")
+																		));
+				adm_stat_AddToDB($arg);
+*/				
+		     	break;
+		    }
+		    case "edit":
+		    {		    
+		      $text=strtr($text, "'", '"');
+		     	__edit($page,$pic,$title,$text,$category,$date,$lid,$url,$visibility,$stitle,$sdesc,$stags);
+		     	
+		     	$u['page'] 		= $page;
+				$u['tpl_path']	= $link;
+				//$s .= adm_art_echo_all($u,$u["tpl_path"],$c);
+		     	
+		     	//----------------------------- STATISTIC ----------------------------------------------------//
+/*
+				$arg = $eng->PrepareStatArgs('article','edit',array( "v1" => $_SESSION['login'],
+																		 "v2" => $page,
+																		 "v3" => $title,
+																		 "v4" => $category,
+																		 "v5" => "ссылка на статью",
+																		 "v6" => $date,
+																		 "v7" => "",
+																		 "v8" => date("Y-d-m")
+																		));
+				adm_stat_AddToDB($arg);
+	*/			
+				
+		     	break;
+		    }
+		}
+		
+
+		
+		
+     
+		
+
+		
+		$obj = new xajaxResponse();
+
+		//$obj->addassign('article','innerHTML',$s);
+		
+		$obj->setCharEncoding('windows-1251');
+		//$obj->addscript($s);
+	 $obj->addscript($l);
+		return $obj;
+	}
+
+
+?>
+<?php
+
+/*-----------------------------------------------------------------------------------------------------------
+Модульыне функции вывода страницы
+-----------------------------------------------------------------------------------------------------------*/
+
+     function adm_art_echo_all($u,$tpl,$c)
+	{
+		$eng = new Engine();
+		$sql = new cMysql($c["sql_host"],$c["sql_db"],$c["sql_login"],$c["sql_pass"]);
+		$tab = $c["sql_main_tab"];
+
+		$out = "";
+        $link = $u["tpl_path"];		// путь к шаблону
+
+		// GET PARAMS
+		$count = $tpl["count"];
+		if(!isset($count)) 		$count = 5;
+
+		$pos = 0;
+
+ 		$pos = $u["pos"];
+ 		if(!isset($pos)) 		$pos = 0;
+
+/*----------------------- sort by category ----------------------------------------*/
+        $sort = $u["sort"]; 	        
+		if(!isset($sort) or $sort == "")	 	$sort_str = "";
+        else{
+			$arr = explode(';',$sort);
+			$sort_str = " AND (`v6`='".array_shift($arr)."'";
+	
+		   	while($str = array_shift($arr))
+		   	{
+		   		$sort_str.= " OR `v6`='".$str."'";
+		   	}
+		   		
+			$sort_str .= ")";		
+			$sort_str=iconv('utf-8','windows-1251',$sort_str);
+			$s_s_next_n = ",\"sort\"";
+		    $s_s_next_a = ",\"$sort\"";
+		    
+		    $arr_sort = explode(';',$sort);
+
+        }
+ /*----------------------- sort by author ----------------------------------------*/       
+        $author = $u["author"];
+        if(!isset($author) or $author == "")	 $auth_str = "";
+        else{		    
+        	$arr = explode(';',$author);
+			$auth_str = " AND `v4`='".array_shift($arr)."'";
+	
+		   	while($str = array_shift($arr))
+		   		$auth_str.= " OR `v4`='".$str."'";
+        	        	
+			$s_a_next_n = ",\"author\"";//"&author=$author";
+        	$s_a_next_a = ",\"$author\"";
+        	
+        	$arr_auth =explode(';',$author);
+        }
+
+/*----------------------- sort by date ----------------------------------------*/
+        $date = $u["date"];
+        if(!isset($date) or $date == "")	 $date_str = "";
+        else{		    
+        	$arr_date = explode(';',$date);
+			
+		   		$date_str.= " AND `v5` BETWEEN '$arr_date[0]' AND '$arr_date[1]'";
+        	        	
+			$s_d_next_n = ",\"date\"";
+        	$s_d_next_a = ",\"$date\"";
+        }
+
+		///////// END GET PARAMS
+
+		$s = "SELECT `gid` FROM $tab WHERE `type` = 'article' AND `v7`='".$u["page"]."'".$sort_str . $auth_str . $date_str. " ORDER BY `lid` DESC, `v5` DESC,`v8` DESC";
+  		
+		//$out .= "<br>" . $s;
+		
+		$ret = $sql->query($s);
+        $n = mysql_num_rows($ret);
+$s='';
+        //print "<h1>'n=$n'</h1>";
+
+        $s = "SELECT * FROM $tab WHERE `type` = 'article' AND `v7`='".$u["page"]."'".$sort_str . $auth_str . $date_str .
+        													" ORDER BY LENGTH(`v8`), `v5` DESC ,`lid` DESC LIMIT " . $pos * $count.",$count  ";
+
+  		$ret = $sql->query($s);
+$s='';
+        //print "<h1>'$s'</h1>";
+
+	    $page = $u["page"];
+
+//ekwo upd
+$out.='<div class="left_pane_art">';
+		// вывод статьи
+		while ($row = mysql_fetch_array($ret,MYSQL_ASSOC))
+		{
+    		$art  	= $row["lid"];
+    		$author = $row["v4"];
+    		$sort   = $row["v6"];
+            $gid    = $row["gid"];
+
+			/// TITLE
+//			$out .= "<div class = \"editable\" id='$gid.v1'>".$row["v1"]."</div>\n";
+	$l  = "'javascript: void(0)' onclick='xajax_parser([\"tpl_path\",\"page\",\"art\"],
+																	[\"$link\",\"$page\",\"$art\"]);'";
+      $visible=$row['v8'];
+      if($visible!='true')$visible='invisible';
+			$out .= "<div class='art_article $visible'><div class = \"editable\" id='$gid.v1'><a href =$l>".$row["v1"]."</a></div>";
+
+			// PICTURE (preview)
+			//$out .= "<div class = \"\"'><img src=".$row["v2"]."></div>\n";
+
+			/// TEXT
+				$out .= "<div class = \"article_text\" >". adm_art_gettext($row["v3"],$l,$tpl)."</div><div class='clear'></div>";
+
+			//AUTHOR
+
+			//$out .= "<div class = \"editable\" id='$gid.v4'>".$row["v4"]."</div>\n";
+
+            //DATE
+			$out .= "<div class = \"editable right\" id='$gid.v5'>".$row["v5"]."</div>\n";
+            //CATEGORY
+            //$l  = "index.php?page=".$u["page"]."&sort=".$row["v6"];
+
+
+		    $out .= "<div class = \"editable right cat\" id='$gid.v6'>".$row["v6"]."</div>\n";
+
+
+/****************************************** ADMIN MENU *************************************************/
+			//УДАЛИТЬ СМОТРТЬ РЕДАКТИРОВАТЬ ОТОБРАЖЕНИЕ
+	        if($_SESSION['access'] != 'Editor')
+			{ 
+			if($_SESSION['access'] != 'Generaleditor')
+				{
+					$out .="<a class='article_delete delete' title='xajax_parser([\"tpl_path\",\"cmd\",\"page\",\"lid\"],[\"$link\",\"delete\",\"".$u["page"]."\",\"$art\"]);' href='javascript: void(0)'>
+					Удалить</a><div class='clear'></div>";
+				}
+				$out .="
+				<a href='javascript: void(0)' class='article_edit' onclick='xajax_parser([\"tpl_path\",\"cmd\",\"page\",\"lid\"],
+																	[\"$link\",\"edit\",\"".$u["page"]."\",\"$art\"]);'>
+				Редактировать</a>
+				";
+	/*------------------------------------ VISIBLE/INVISIBLE ARTICLE--------------------------------*/
+	            
+	            //$out .= "<td>";
+	            
+	            
+	            
+	            /*if( $row['v8']	){
+	            	$l = "onclick='xajax_adm_art_SetVisSet($gid,".$eng->TransArgs($c).",0)'";
+					$out .=  "<input type=\"radio\" name=\"art_$gid\" value=\"0\" $l> Скрытa<Br>"; 
+					$l = "onclick='xajax_adm_art_SetVisSet($gid,".$eng->TransArgs($c).",1)'";
+					$out .= "<input type=\"radio\" name=\"art_$gid\" checked=\"checked\" value=\"1\" $l>Видимa<Br>";
+				}else{
+					$l = "onclick='xajax_adm_art_SetVisSet($gid,".$eng->TransArgs($c).",0)'";
+					$out .= "<input type=\"radio\" name=\"art_$gid\" checked=\"checked\" value=\"0\" $l>Скрытa<Br>";  
+					$l = "onclick='xajax_adm_art_SetVisSet($gid,".$eng->TransArgs($c).",1)'";
+					$out .= "<input type=\"radio\" name=\"art_$gid\" value=\"1\" $l> Видимa<Br>";
+				}*/
+	            			}
+			$out .= "</div>";
+		}
+		$out.='</div>';
+
+
+
+		// ADMIN MENU///////
+		// Вывод линков на след страницу
+
+		$n = ceil($n / $count);
+
+
+        if ($n > 1){
+			for($i = 0;$i<$n;$i++)
+			{
+			    $out .= "<span class = \"art_search\">\n";
+	            if ($i == $pos)  	$out .= "<a>".($i+1)."</a>";
+				else{
+					$l  = "'javascript: void(0)' onclick='xajax_parser([\"tpl_path\",\"page\",\"pos\"$s_s_next_n$s_a_next_n],[\"$link\",\"$page\",\"$i\"$s_s_next_a$s_a_next_a]);'";
+
+					$out .= "<a href=$l>".($i+1)."</a>";
+				}
+				$out .= "</span>\n";
+
+			}
+		}
+
+/*--------------------------FILTER-------------------------------------------------------------------------*/
+		$right = "<div class='rounded art_right'><h3>Фильтр</h3><form><fieldset>";
+		$q = "onclick='chiliFilterData(\"xajax_adm_art_filter\");'";
+		
+		// SORT BY AUTHOR
+		$s = "SELECT DISTINCT `v4` FROM $tab WHERE `type`='article' AND `v7`='$page'";
+		$ret = $sql->query($s);
+		
+			$right .= "<legend>По автору:</legend>";
+		while($row = mysql_fetch_row($ret))
+		{	
+			$flag= false;
+			
+			if(isset($arr_auth)){
+				foreach($arr_auth as $value)
+				{
+				if($value == $row[0]){
+						$right .= "<input type=\"checkbox\" name=\"author_$row[0]\" class= \"author\" checked=\"checked\" id=\"author_$row[0]\"/><label for='author_{$row[0]}' title='{$row[0]}'>{$row[0]}</label>
+					<div class='clear'></div>";
+					$flag = true;
+					}	
+				}
+			}
+				if(!$flag)	$right .= "<input type=\"checkbox\" name=\"author_$row[0]\" class= \"author\" id=\"author_$row[0]\"/><label for='author_{$row[0]}' title='{$row[0]}'>{$row[0]}</label>
+					<div class='clear'></div>";
+		}
+		
+		$right.= "</fieldset>";
+		
+		// SORT BY CATEGORY
+		$right .= "<fieldset>";
+		$s = "SELECT DISTINCT `v6` FROM $tab WHERE `type`='article' AND `v7`='$page'";
+		$ret = $sql->query($s);
+		
+		$right .= "<legend>По категории:</legend>";
+		while($row = mysql_fetch_row($ret))
+		{	
+			$flag= false;
+			
+			if(isset($arr_sort)){
+				foreach($arr_sort as $value)
+				{
+					if($value == $row[0]){
+		$right .= "<input type=\"checkbox\" name=\"cat_$row[0]\" class= \"category\" checked=\"checked\" id='cat_$row[0]'/><label for='cat_$row[0]'>$row[0]</label>
+						<div class='clear'></div>";
+						$flag = true;
+					}	
+				}
+			}
+			if(!$flag)	$right .= "<input type=\"checkbox\" name=\"cat_$row[0]\" class= \"category\"id='cat_$row[0]'/><label for='cat_$row[0]'>$row[0]</label>
+						<div class='clear'></div>";
+		}		
+		$right.= "</fieldset>";
+		
+		// SORT BY DATE
+	/*	
+		$right .= "<div class=art_date>";
+		$right .= "Sort by date<br>";
+		
+		$right .= adm_art_echo_date_fields(); // echo FROM AND TO group fields  
+				
+		/******************** DISPLAY DATE IF SET *******************/		
+	/*	if(isset($arr_date))
+		{
+			$right .= "<div class = art_date_display>";
+			$right .= "From:$arr_date[0] to $arr_date[1]<br>\n";
+			$right .= "</div>";
+		}	
+		
+		$right.= "</fieldset>";
+		*/
+
+		
+		//$right .= "<script src='checkboxs.js'></script>";
+		$right .= "</form><a href='javascript: void(0)' class='rounded {transparent}' onclick='chiliFilterData([\"d1_d\",\"d1_m\",\"d1_y\",
+																			\"d2_d\",\"d2_m\",\"d2_y\"],
+																			[\"author\",\"category\"],
+																		\"xajax_adm_art_filter\");'>Фильтр</a>";
+		$right.= "</div>"; // end class art_right
+/*--------------------------END FILTER-------------------------------------------------------------------------*/
+
+		$out .= $right;
+        //print $out;  // < == !!!!!!!!!!
+		return $out;
+	}
+
+
+	function adm_art_echo_date_fields()
+	{	
+		$right .= "FROM:\n";
+		
+		$right .= "Year\n";
+		
+		$right .= "<select size=\"1\" id=\"d1_y\">\n";
+		$right .= "<option value=\"\"></option>\n";
+		$right .= "<option value=\"2008\">2008</option>\n";
+		$right .= "<option value=\"2009\">2009</option>\n";
+		$right .= "</select>\n";
+		
+		$right .= "Mounth\n";
+		
+		$right .= "<select size=\"1\" id=\"d1_m\">\n";
+		$right .= "<option value=\"\"></option>\n";
+		$right .= "<option value=\"01\">jan</option>\n";
+		$right .= "<option value=\"02\">feb</option>\n";
+		$right .= "<option value=\"03\">march</option>\n";
+		$right .= "<option value=\"04\">april</option>\n";
+		$right .= "<option value=\"05\">may</option>\n";
+		$right .= "<option value=\"06\">june</option>\n";
+		$right .= "<option value=\"07\">july</option>\n";
+		$right .= "<option value=\"08\">augest</option>\n";
+		$right .= "<option value=\"09\">sep</option>\n";
+		$right .= "<option value=\"10\">oct</option>\n";
+		$right .= "<option value=\"11\">nov</option>\n";
+		$right .= "<option value=\"12\">dec</option>\n";
+		$right .= "</select>\n";
+		
+		$right .= "Day\n";
+		$right .= "<select size=\"1\" id = \"d1_d\">\n";
+			
+			$right .= "<option value=\"\"></option>\n";
+		for($i=1;$i<=31;$i++)
+			$right .= "<option value=\"$i\">$i</option>\n";
+		$right .= "</select>\n";
+		
+		$from = $right;
+		
+		$right = preg_replace("/FROM/","TO",$right);
+		$right = preg_replace("/d1_y/","d2_y",$right);
+		$right = preg_replace("/d1_m/","d2_m",$right);
+		$right = preg_replace("/d1_d/","d2_d",$right);
+		
+		$out = $from ."<br>". $right;
+		
+		return $out	;
+	}
+	
+/*VIEW SINGLE ARTICLE*/
+	function adm_art_echo_singl($u,$c)
+	{
+        $out =  "";
+
+        $sql = new cMysql($c["sql_host"],$c["sql_db"],$c["sql_login"],$c["sql_pass"]);
+		$tab = $c["sql_main_tab"];
+
+		$s = "SELECT * FROM $tab WHERE `type` = 'article' AND `LID` =".$u["art"];
+  		$ret = $sql->query($s);
+
+		// вывод статьи
+		$row = mysql_fetch_array($ret,MYSQL_ASSOC);
+
+			/// TITLE
+
+			$out .= "<div class = \"editable\" >".$row["v1"]."</div>\n";
+
+			// PICTURE (preview)
+			$out .= "<div class = \"art_pic\" ><img src=". $row["v2"]."></div>\n";
+
+			/// TEXT
+
+			$out .= "<div class = \"art_text\">". $row["v3"]."</div>\n";
+
+			//AUTHOR
+			//$out .= "<div class = \"art_author\">".$row["v4"]."</div>\n";
+            //DATE
+			$out .= "<div class = \"art_date\">".$row["v5"]."</div>\n";
+            //CATEGORY
+		    //$out .= "<div class = \"art_category\">".$row["v6"]."</div>\n";
+
+		return $out;
+	}
+
+
+    function adm_art_get_title($c,$u)
+	{
+
+		if(!isset($u["art"])) return false;
+
+		$sql = new cMysql($c["sql_host"],$c["sql_db"],$c["sql_login"],$c["sql_pass"]);
+		$tab = $c["sql_main_tab"];
+
+		$s = "SELECT * FROM $tab WHERE `type` = 'article' AND `LID` =".$u["art"];
+  		$ret = $sql->query($s,1);
+
+  		$out = $ret["v1"];
+
+  		return $out;
+	}
+
+	function adm_art_IntoDynamic($u)
+	{
+		$eng = new Engine;
+		$c = $eng->InitConf("conf.ini");
+		
+		$sql = new cMysql($c["sql_host"],$c["sql_db"],$c["sql_login"],$c["sql_pass"]);
+		$tab = $c["sql_main_tab"];
+		
+		$s = "SELECT DISTINCT `v6` FROM $tab WHERE `type` = 'article' and `v7` = '".$u['page']."'";
+		
+		$ret = $sql->query($s);
+		$out .= "<ul>";
+		
+		while($row = mysql_fetch_assoc($ret))
+		{
+				$out .= "<li>".$row['v6']."</li>";
+		}
+		$out .= "<ul>";
+		
+		return $out;
+	
+	}
+
+
+	function adm_art_gettext($text,$href,$tpl)
+	{
+		$size = $tpl["block"];
+		$text=strip_tags($text);
+		if(!isset($size)) 		$size = 60;
+
+		$buff = substr($text,0,$size);
+
+
+        $arr = explode(" ",$buff);
+
+
+        for($i=0;$i<=count($arr);$i++)
+        {
+        	 if($i == count($arr) - 3)
+        	 {
+        	 	$ret .="<span class = art_text_link>";
+
+        	 }
+
+        	 $ret .=$arr[$i] . " ";
+        }
+        $ret .= "</span>";
+
+
+		return $ret;
+	}
+	
+	/*-------------------- ФУНКЦИЯ УСТАНАВЛИВАЕТ РЕЖИМ (НЕ)/ВИДИМОСТИ для статьи */
+	function adm_art_SetVisSet($gid,$c_n,$c_a,$v)
+	{
+		$eng = new Engine();
+		
+		$c	= $eng->TransArgs($c_n,$c_a);
+		 
+		$sql = new cMysql($c["sql_host"],$c["sql_db"],$c["sql_login"],$c["sql_pass"]);
+		$tab = $c["sql_main_tab"];
+		
+		$s = "UPDATE $tab SET `v8` = $v WHERE `gid` = $gid ";
+		$sql->query($s);
+		
+		$obj = new xajaxResponse();
+
+		//$obj->addassign('article','innerHTML',$s);
+		//$obj->addalert($v);
+		return $obj;
+		
+	}
+		/*-------------------- ФУНКЦИЯ УСТАНАВЛИВАЕТ РЕЖИМ (НЕ)/ВИДИМОСТИ ДЛЯ РАЗДЕЛА */
+	function adm_art_SetVisSetCat($gid,$c_n,$c_a,$v)
+	{
+		$eng = new Engine();
+		
+		$c	= $eng->TransArgs($c_n,$c_a);
+		 
+		$sql = new cMysql($c["sql_host"],$c["sql_db"],$c["sql_login"],$c["sql_pass"]);
+		$tab = $c["sql_struct_tab"];
+		
+		$s = "UPDATE $tab SET `v1` = $v WHERE `id` = $gid ";
+		$sql->query($s);
+		
+		$obj = new xajaxResponse();
+
+		//$obj->addassign('article','innerHTML',$s);
+		//$obj->addalert($v);
+		return $obj;
+		
+	}
+?>
