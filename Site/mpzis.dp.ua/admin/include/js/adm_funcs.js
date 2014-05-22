@@ -149,7 +149,32 @@ function adm_PanelRedirect(pan,id)
 		
 }
 
-
+function generateArrayOfIds()
+{
+	var allTheCheckboxes = getElementsByClass('toRemCheckbox',null,'input');
+	var str = "";
+	var i = 0;
+	var alreadyAppended = 0;
+	
+	for (i = 0;i<allTheCheckboxes.length;i++)
+	{
+		if (allTheCheckboxes[i].checked)
+		{
+			if(alreadyAppended == 1)
+			{
+				str = str + "," + allTheCheckboxes[i].name;
+			}
+			else
+			{
+				str = allTheCheckboxes[i].name;
+				alreadyAppended = 1;
+			}
+		}
+		
+	}
+	
+	return str;
+}
 
 
 

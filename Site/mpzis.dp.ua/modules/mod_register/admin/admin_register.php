@@ -66,6 +66,22 @@ $register_INFO["TABLES"]["workers"]	= array("name"=>"register","title" => "Та�
 				
 				break;
 			}
+
+            case "del_selected_quest":
+            {
+                $out .= reg_del_selected_quest($u['ids']);
+
+                break;
+            }
+
+            case "del_selected":
+            {
+                $out .= reg_del_selected($u['ids']);
+
+                $out .= reg_DisplayTab( $c ); 
+
+                break;
+            }
 			
 			case "del": // удалить из бд
 			{
@@ -272,17 +288,29 @@ $register_INFO["TABLES"]["workers"]	= array("name"=>"register","title" => "Та�
  	lang	varchar(20)	utf8_unicode_ci		Нет	Нет		 	 	 	 	 	 	 
  	file_upl	varchar(256)	utf8_unicode_ci		Нет	Нет		 	 	 	 	 	 	 
  	OK	int(11)*/
+
+            $l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\",\"id\"],[\"del_all_quest\",\"register\",\"{$kor["id"]}\"]);'"; 
+            $out .= "<a href = $l> Удалить все</a>";
+
+            $l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\",\"id\"],[\"view_for_print\",\"register\",\"{$kor["id"]}\"]);'"; 
+            $out .= "<a href = $l> Для печати</a>";
+
+            $l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\",\"ids\"],[\"del_selected_quest\",\"register\",generateArrayOfIds()]);'";
+            $out .= "<a href = $l> Удалить выбранное</a>";
+            $out .= "<br/>";
+
  	$out .= "<table style='float:left;'>";
 			$out2 .= "<table style='float:left;'>";
 			$out2.="<tr><td>Файл</td><td></td></tr>";
-	$out .= "<tr align=center><td>Фамилия</td><td>Имя</td><td>Отчество</td><td>Должность</td><td>Город</td><td>Email</td></tr>";
+	$out .= "<tr align=center><td>На удаление</td><td>Фамилия</td><td>Имя</td><td>Отчество</td><td>Должность</td><td>Город</td><td>Email</td></tr>";
 		while( $kor = mysql_fetch_assoc($ret) )
 		{
 			//$out .= "<div class='block_reg'>";
 			
 			$out .= "<tr align=center>";
 			
-			$out .= "<td>{$kor["surname"]}</td><td>{$kor["name"]}</td><td>{$kor["f_name"]}</td><td>{$kor["science"]}</td><td>{$kor["city"]}</td><td>{$kor["email"]}</td></tr>";
+            $inputCode = "<input type=\"checkbox\" name=\"{$kor["id"]}\" class=\"toRemCheckbox\">";
+			$out .= "<td>{$inputCode}</td><td>{$kor["surname"]}</td><td>{$kor["name"]}</td><td>{$kor["f_name"]}</td><td>{$kor["science"]}</td><td>{$kor["city"]}</td><td>{$kor["email"]}</td></tr>";
 			/*
 			$out .= "<tr><td>Фамилия</td><td><div class=''>{$kor["surname"]}</div></td></tr>";
 			$out .= "<tr><td>Имя</td><td><div class=''>{$kor["name"]}</div></td></tr>";	
@@ -334,12 +362,6 @@ $register_INFO["TABLES"]["workers"]	= array("name"=>"register","title" => "Та�
 		}
 		
 	$out .= "</table>";
-
-		$l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\",\"id\"],[\"del_all_quest\",\"register\",\"{$kor["id"]}\"]);'"; 
-		$out2 .= "<a href = $l> Удалить все</a>";
-
-	    $l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\",\"id\"],[\"view_for_print\",\"register\",\"{$kor["id"]}\"]);'"; 
-		$out2 .= "<a href = $l> Для печати</a>";
       	
         $out2 .= "</table>";
       	return $out.$out2;
@@ -439,6 +461,47 @@ $register_INFO["TABLES"]["workers"]	= array("name"=>"register","title" => "Та�
       	
       	return $out;
 		      	
+      }
+
+        function reg_del_selected( $ids )
+        {
+            $eng = new Engine;
+            $c = $eng->InitConf('conf.ini');
+            $sql = new cMysql($c["sql_host"],$c["sql_db"],$c["sql_login"],$c["sql_pass"]);
+            $tab = "mpzis_register";
+            $ids_arr = explode(",",$ids);
+            if(count($ids_arr) == 0)
+            {
+                return;
+            }
+            else
+            {
+                $str = "`id` = " . $ids_arr[0];
+
+                for($i = 1; $i < count($ids_arr); $i++)
+                {
+                    $str = $str . " OR `id` = ".$ids_arr[$i];
+                }
+
+                $s = "delete from  $tab where " . $str;
+                $sql->query($s,false,'UTF8');
+            }
+            
+        }
+
+      function reg_del_selected_quest($ids)
+      {
+        
+        $out .= "Удаление $ids. Вы уверены?";
+        
+        $l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\",\"ids\"],[\"del_selected\",\"register\",\"$ids\"]);'";
+        $out .= "<a href = $l>Да</a>;&nbsp&nbsp";
+        
+        $l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\"],[\"view\",\"register\"]);'";
+        $out .= "<a href = $l>Нет</a>";
+        
+        return $out;
+            
       }
 
       function reg_del_all_quest()
