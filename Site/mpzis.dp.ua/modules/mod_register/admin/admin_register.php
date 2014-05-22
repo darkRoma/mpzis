@@ -44,6 +44,13 @@ $register_INFO["TABLES"]["workers"]	= array("name"=>"register","title" => "Та�
 				$out .= reg_DisplayTab($c);
 				break;
 			}
+
+			case "view_for_print":
+			{
+				$out .= reg_DisplayTabForPrint($c);
+				break;
+			}
+
 			case "accept": // принять людей
 			{
 				$out .= reg_accept($u['id']);
@@ -330,9 +337,53 @@ $register_INFO["TABLES"]["workers"]	= array("name"=>"register","title" => "Та�
 
 		$l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\",\"id\"],[\"del_all_quest\",\"register\",\"{$kor["id"]}\"]);'"; 
 		$out2 .= "<a href = $l> Удалить все</a>";
+
+	    $l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\",\"id\"],[\"view_for_print\",\"register\",\"{$kor["id"]}\"]);'"; 
+		$out2 .= "<a href = $l> Для печати</a>";
       	
         $out2 .= "</table>";
       	return $out.$out2;
+      }
+
+      function reg_DisplayTabForPrint( $c )
+      {
+
+     	$eng = new Engine();
+		$sql = new cMysql($c["sql_host"],$c["sql_db"],$c["sql_login"],$c["sql_pass"]);
+		$tab = "mpzis_register";
+		
+		$s  = "select * from $tab";
+		
+		$ret = $sql->query($s,false,'UTF8');
+
+ 		$out .= "<table style='float:left;border:1px solid black;'>";
+		$out2 .= "<table style='float:left;border:1px solid black;'>";
+
+		$out .= "<tr align=center style=\"border:1px solid black;\"><td style=\"border:1px solid black;\">Фамилия</td><td style=\"border:1px solid black;\">Имя</td><td style=\"border:1px solid black;\">Отчество</td><td style=\"border:1px solid black;\">Телефон</td><td style=\"border:1px solid black;\">Город</td><td style=\"border:1px solid black;\">Email</td></tr>";
+		while( $kor = mysql_fetch_assoc($ret) )
+		{	
+			$out .= "<tr align=center>";	
+			$out .= "<td style=\"border:1px solid black;\">{$kor["surname"]}</td><td style=\"border:1px solid black;\">{$kor["name"]}</td><td style=\"border:1px solid black;\">{$kor["f_name"]}</td><td style=\"border:1px solid black;\">{$kor["w_tel"]}</td><td style=\"border:1px solid black;\">{$kor["city"]}</td><td style=\"border:1px solid black;\">{$kor["email"]}</td></tr>";
+						
+
+			
+			$l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\",\"id\"],[\"accept\",\"register\",\"{$kor["id"]}\"]);'"; 
+			$out2 .= "<a href=$l>$msg</a>";	
+			
+			$out2 .= "</td>";
+			
+			$out2 .= "<td style=\"border:1px solid black;\">";
+			
+			$out2 .= "</td>";
+			$out2 .= "</tr>"; // main tr
+
+		}
+		
+	    $out .= "</table>";
+      	
+        $out2 .= "</table>";
+      	return $out.$out2;
+	
       }
       
       function reg_accept( $id )
