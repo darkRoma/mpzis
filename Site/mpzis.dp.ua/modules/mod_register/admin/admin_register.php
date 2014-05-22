@@ -44,6 +44,12 @@ $register_INFO["TABLES"]["workers"]	= array("name"=>"register","title" => "Та�
 				$out .= reg_DisplayTab($c);
 				break;
 			}
+
+			case "view_for_print":
+			{
+				$out .= reg_DisplayTabForPrint($c);
+				break;
+			}
 			case "accept": // принять людей
 			{
 				$out .= reg_accept($u['id']);
@@ -235,7 +241,94 @@ $register_INFO["TABLES"]["workers"]	= array("name"=>"register","title" => "Та�
       	return $out;
       }
       
-      
+      function reg_DisplayTabForPrint($c)
+      {
+      	$eng = new Engine();
+		$sql = new cMysql($c["sql_host"],$c["sql_db"],$c["sql_login"],$c["sql_pass"]);
+		$tab = "mpzis_register";
+		
+		$s  = "select * from $tab";
+		
+		$ret = $sql->query($s,false,'UTF8');
+		/*id	int(11)			Нет	Нет		 	 	 	 	 	 
+ 	science	varchar(50)	utf8_unicode_ci		Нет	Нет		 	 	 	 	 	 
+ 	surname	varchar(50)	utf8_unicode_ci		Нет	Нет		 	 	 	 	 	 	 
+ 	name	varchar(50)	utf8_unicode_ci		Нет	Нет		 	 	 	 	 	 	 
+ 	f_name	varchar(50)	utf8_unicode_ci		Нет	Нет		 	 	 	 	 	 	 
+ 	kaf	varchar(100)	utf8_unicode_ci		Нет	Нет		 	 	 	 	 	 	 
+ 	place	varchar(100)	utf8_unicode_ci		Нет	Нет		 	 	 	 	 	 	 
+ 	who	varchar(50)	utf8_unicode_ci		Нет	Нет		 	 	 	 	 	 	 
+ 	h_addr	varchar(100)	utf8_unicode_ci		Нет	Нет		 	 	 	 	 	 	 
+ 	city	varchar(20)	utf8_unicode_ci		Нет	Нет		 	 	 	 	 	 	 
+ 	country	varchar(20)	utf8_unicode_ci		Нет	Нет		 	 	 	 	 	 	 
+ 	index	varchar(10)	utf8_unicode_ci		Нет	Нет		 	 	 	 	 	 	 
+ 	h_tel	varchar(20)	utf8_unicode_ci		Нет	Нет		 	 	 	 	 	 	 
+ 	w_tel	varchar(20)	utf8_unicode_ci		Нет	Нет		 	 	 	 	 	 	 
+ 	email	varchar(30)	utf8_unicode_ci		Нет	Нет		 	 	 	 	 	 	 
+ 	r_name	varchar(200)	utf8_unicode_ci		Нет	Нет		 	 	 	 	 	 	 
+ 	lang	varchar(20)	utf8_unicode_ci		Нет	Нет		 	 	 	 	 	 	 
+ 	file_upl	varchar(256)	utf8_unicode_ci		Нет	Нет		 	 	 	 	 	 	 
+ 	OK	int(11)*/
+ 	$out .= "<table style='float:left;'>";
+	$out2 .= "<table style='float:left;'>";
+	$out2.="<tr><td>Файл</td><td></td></tr>";
+	$out .= "<tr align=center><td>Фамилия</td><td>Имя</td><td>Отчество</td><td>Телефон</td><td>Город</td><td>Email</td></tr>";
+		while( $kor = mysql_fetch_assoc($ret) )
+		{
+			//$out .= "<div class='block_reg'>";
+			
+			$out .= "<tr align=center>";
+			
+			$out .= "<td>{$kor["surname"]}</td><td>{$kor["name"]}</td><td>{$kor["f_name"]}</td><td>{$kor["w_tel"]}</td><td>{$kor["city"]}</td><td>{$kor["email"]}</td></tr>";
+			/*
+			$out .= "<tr><td>Фамилия</td><td><div class=''>{$kor["surname"]}</div></td></tr>";
+			$out .= "<tr><td>Имя</td><td><div class=''>{$kor["name"]}</div></td></tr>";	
+			$out .= "<tr><td>Отчество</td><td><div class=''>{$kor["f_name"]}</div></td></tr>";
+			$out .= "<tr><td>Должность</td><td><div class=''>{$kor["science"]}</div></td></tr>";
+			$out .= "<tr><td>Город</td><td><div class=''>{$kor["city"]}</div></td></tr>";
+			$out .= "<tr><td>Email</td><td><div class=''>{$kor["email"]}</div></td></tr>";
+			
+			$out .= "<tr><td></td><td><div class=''>{$kor["kaf"]}</div></td></tr>";
+			$out .= "<tr><td></td><td><div class=''>{$kor["place"]}</div></td></tr>";
+			$out .= "<tr><td></td><td><div class=''>{$kor["who"]}</div></td></tr>";
+			$out .= "<tr><td></td><td><div class=''>{$kor["h_addr"]}</div></td></tr>";
+			
+			$out .= "<tr><td></td><td><div class=''>{$kor["country"]}</div></td></tr>";
+			$out .= "<tr><td></td><td><div class=''>{$kor["index"]}</div></td></tr>";
+			$out .= "<tr><td></td><td><div class=''>{$kor["h_tel"]}</div></td></tr>";
+			$out .= "<tr><td></td><td><div class=''>{$kor["w_tel"]}</div></td></tr>";
+			
+			$out .= "<tr><td></td><td><div class=''>{$kor["r_name"]}</div></td></tr>";	
+			$out .= "<tr><td></td><td><div class=''>{$kor["lang"]}</div></td></tr>";
+			*/
+			
+			
+			$out2.= "<tr><td><a href = {$kor["file_upl"]}>Link</a></td><td>";
+			
+			if($kor["OK"] == 1) $msg = "OK";
+			else				$msg = "Check";
+			
+			$l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\",\"id\"],[\"accept\",\"register\",\"{$kor["id"]}\"]);'"; 
+			$out2 .= "<a href=$l>$msg</a>";	
+			
+			$out2 .= "</td>";
+			
+			$out2 .= "<td>";
+			$l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\",\"id\"],[\"del_quest\",\"register\",\"{$kor["id"]}\"]);'"; 
+			$out2 .= "<a href = $l> Del</a>";
+			
+			$out2 .= "</td>";
+			$out2 .= "<td>";
+			
+			$l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\",\"id\"],[\"edit_form\",\"register\",\"{$kor["id"]}\"]);'"; 
+			$out2 .= "<a href = $l> Edit</a>";
+			
+			$out2 .= "</td>";
+			$out2 .= "</tr>"; // main tr
+			
+			
+			//$out .= "</div>";
+      }
       
       function  reg_DisplayTab($c)
       {
@@ -330,6 +423,9 @@ $register_INFO["TABLES"]["workers"]	= array("name"=>"register","title" => "Та�
 
 		$l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\",\"id\"],[\"del_all_quest\",\"register\",\"{$kor["id"]}\"]);'"; 
 		$out2 .= "<a href = $l> Удалить все</a>";
+
+		$l="'javascript: void(0)' onclick='xajax_parser([\"cmd\",\"obj\",\"id\"],[\"view_for_print\",\"register\",\"{$kor["id"]}\"]);'"; 
+		$out2 .= "<a href = $l> Отобразить для печати</a>";
       	
         $out2 .= "</table>";
       	return $out.$out2;
