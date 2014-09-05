@@ -514,7 +514,18 @@ class AdminCore
 																			\"admin\");'";
 	
 		$out .= "<div id='chXajaxLoader' style='display: none;'></div>";
-		$out.='<div id="updatesPAnel">'.AdminCore::checkForUpdates().'</div>';
+		$out .='<div id="updatesPAnel">'.AdminCore::checkForUpdates().'</div>';
+        /*
+        <script type='text/javascript' src='templates/js/jquery.js'></script>
+        <script type='text/javascript' src='templates/js/jqcolor.js'></script>
+        <script type='text/javascript' src='templates/js/jquery.cookie-1.4.1.min.js'></script>
+        <script type='text/javascript' src='templates/js/setCookieFunc.js'></script>
+        */
+        $out .= "<script type='text/javascript' src='include/js/jquery.js'></script>";
+        $out .= "<script type='text/javascript' src='include/js/jquery_cookie.js'></script>";
+        $out .= "<script type='text/javascript' src='include/js/setCookieFunc.js'></script>";
+        $out .= "<a href='javascript:setCookieRu()' class='flag_ru'></a>";
+        $out .= "<a href='javascript:setCookieUa()' class='flag_ua'></a>";
 		$out .= "<div id='userPanel'>";
 		$out .= "<img src='{$_SESSION['photo']}' class='' border=0>{$_SESSION['fio']}&nbsp;(<abbr title='{$_SESSION['access_desc']}'>{$_SESSION['access']}</abbr>)";
 		

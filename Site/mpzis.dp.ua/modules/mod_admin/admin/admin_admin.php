@@ -9,7 +9,7 @@
 	$admin_INFO["comment"] 			= "admin for module admin (demo version)";
 	$admin_INFO["group"] 			= "top";
 	$admin_INFO["function"]			= "admin_admin";
-	$admin_INFO["caption"]			= "Управлять";
+	$admin_INFO["caption"]			= "Г“ГЇГ°Г ГўГ«ГїГІГј";
 	
 	$admin_INFO["ACCESS"]["r"]["E"] 	= 1;
 	$admin_INFO["ACCESS"]["r"]["GE"] 	= 1;

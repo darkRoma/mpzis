@@ -420,3 +420,23 @@ a.help:hover{
 .invisible a{
   color: #00AFFF;
 }
+
+a.flag_ru{
+  display: inline-block;
+  background: url('img/Russian_flag.gif') no-repeat;
+  height: 27px;
+  width: 40px;
+  max-width: 100%;
+  max-height: 100%;
+  margin-right: 8px;
+}
+
+a.flag_ua{
+  display: inline-block;
+  background: url('img/Ukrainian_flag.jpg') no-repeat;
+  height: 27px;
+  width: 40px;
+  max-width: 100%;
+  max-height: 100%;
+  margin-right: 8px;
+}

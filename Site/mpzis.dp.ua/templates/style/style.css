@@ -200,6 +200,27 @@ select{
   right: 20px;
   top: 20px;
 }
+
+.main_links a.flag_ru{
+  display: inline-block;
+  background: url('img/Russian_flag.gif') no-repeat;
+  height: 27px;
+  width: 40px;
+  max-width: 100%;
+  max-height: 100%;
+  margin-right: 8px;
+}
+
+.main_links a.flag_ua{
+  display: inline-block;
+  background: url('img/Ukrainian_flag.jpg') no-repeat;
+  height: 27px;
+  width: 40px;
+  max-width: 100%;
+  max-height: 100%;
+  margin-right: 8px;
+}
+
 .main_links a.home{
   display: inline-block;
   background: url('img/top_icons.gif') no-repeat 1px 0px;

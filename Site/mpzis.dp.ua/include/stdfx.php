@@ -132,6 +132,13 @@ class Engine
             while(list($k,$v) = each($arr))
 	    		$this->conf_a[$k] 		= $v;
 
+
+	    if($_COOKIE["language"] === "ru")
+	    {
+	    	$this->conf_a["sql_main_tab"] = $this->conf_a["sql_main_tab_ru"];
+	    	$this->conf_a["sql_struct_tab"] = $this->conf_a["sql_struct_tab_ru"];
+	    }
+
       
 
         return $this->conf_a;

@@ -3,18 +3,25 @@
 <base href="/">
 <link rel='stylesheet' href='templates/style/style.css' type='text/css'>
 <title>
-Реєстрація учасника - МПЗИС-
 <?php 
-echo date('Y');
+$urla=explode('/',$_SERVER['REQUEST_URI']);
+//echo $urla[1].$urla[2];
+$s="SELECT `c_adm_title` FROM mpzis_ch_struct WHERE `c_id`='{$urla[1]}'";
+$eng 	= new Engine();
+$c 		= $eng->InitConf("admin/conf.ini");
+$sql 	= new cMysql($c["sql_host"],$c["sql_db"],$c["sql_login"],$c["sql_pass"]);
+$ret=$sql->query($s,false,'utf8');
+//global $title;
+$title=mysql_result($ret,0,'c_adm_title');
+echo $title.' - МПЗИС-'.date('Y');
 ?>
+
 </title>
 <script type='text/javascript' src='templates/js/jquery.js'></script>
-<script type='text/javascript' src='templates/js/jquery.js'></script>
-<script type='text/javascript' src='templates/js/jquery.validate.pack.js'></script>
-<script type='text/javascript' src='templates/js/messages_ru.js'></script>
+<script type='text/javascript' src='templates/js/jqcolor.js'></script>
 <script type='text/javascript' src='templates/js/jquery.cookie-1.4.1.min.js'></script>
 <script type='text/javascript' src='templates/js/setCookieFunc.js'></script>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8"/> 
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>  
 </head>
 <body>
 <div class='header'><a href='#' class='logo'></a>
@@ -31,7 +38,8 @@ echo date('Y');
   <a href='contacts/' class='contacts'></a>
 </div>
 <ul class='small_links'>
-<li><a href='conditions/'>Умови участі</a></li>
+<li><a href='register/'>Взяти участь</a></li>
+<li><a href='conditions/'>Условия участия</a></li>
 <li><a href='members/'>Учасники</a></li>
 <li><a href='program/'>Програма</a></li>
 <li><a href='orgcommitee/'>Оргкомітет</a></li>
@@ -39,10 +47,11 @@ echo date('Y');
 <li><a href='archieve/'>Архів</a></li>
 </ul>
 <div class='wrap_info'>
-[chili cmd=form]register[/chili]
+[chili]article[/chili]
 </div>
 <div class='clear'></div>
 <div class='footer' style="height:30px"><a href='http://chili.co.ua' target='_blank' style='color: silver;'>Розробка та підтримка сайту<img src='chili_logos.jpg' style='margin-bottom:-12px;margin-left:5px' border=0 alt='Разработка сайта Креативное агентство «chili»'></a></div>
+
 <script type='text/javascript'>
 function romanize (num) {
 	if (!+num)
@@ -59,9 +68,7 @@ function romanize (num) {
 }
 
   $(document).ready(function(){
-    jQuery.validator.messages.required = "";
-    $("#F").validate(); 
-           //years builder
+    //years builder
       var year_start=2003;
       var d = new Date();
       var year_end=d.getFullYear();
@@ -109,13 +116,15 @@ function romanize (num) {
       });
       $('.years>div:last').css('width','50').css('height','50').addClass('current');
     //eo years builder
-    if($.browser.msie){
-      
-      $('input').css('width',$('select').width());
-      $('input.submit').css('width','150px');
-    }
+    $('ul.small_links a').each(function(){
+      var srt=document.location.href;
+      srt=srt.replace('/','');
+      if($(this).attr('href')==srt) $(this).parent().css('display','none');
+    });
   });
 </script>
+
+
 <!-- Yandex.Metrika counter -->
 <div style="display:none;"><script type="text/javascript">
 (function(w, c) {

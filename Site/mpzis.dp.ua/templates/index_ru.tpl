@@ -12,6 +12,8 @@ echo 'МПЗИС-'.date('Y');
 </title>
 <script type='text/javascript' src='templates/js/jquery.js'></script>
 <script type='text/javascript' src='templates/js/jqcolor.js'></script>
+<script type='text/javascript' src='templates/js/jquery.cookie-1.4.1.min.js'></script>
+<script type='text/javascript' src='templates/js/setCookieFunc.js'></script>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/> 
 </head>
 <body>
@@ -23,6 +25,8 @@ echo 'МПЗИС-'.date('Y');
 </div>
 </div>
 <div class='main_links'>
+  <a href='javascript:setCookieRu()' class='flag_ru'></a>
+  <a href='javascript:setCookieUa()' class='flag_ua'></a>
   <a href='contacts/' class='contacts'></a>
 </div>
 <div class='wrap'>
@@ -33,7 +37,7 @@ echo 'МПЗИС-'.date('Y');
   <div class='right_1'>
   <a href='register/' class='reg'></a>
   <ul class='links'>
-  <li><a href='conditions/'>Умови участі</a></li>
+  <li><a href='conditions/'>Условия участия</a></li>
   <li><a href='members/'>Учасники</a></li>
   <li><a href='program/'>Програма</a></li>
   <li><a href='orgcommitee/'>Оргкомітет</a></li>

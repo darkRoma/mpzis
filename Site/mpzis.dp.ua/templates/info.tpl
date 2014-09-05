@@ -19,6 +19,8 @@ echo $title.' - МПЗИС-'.date('Y');
 </title>
 <script type='text/javascript' src='templates/js/jquery.js'></script>
 <script type='text/javascript' src='templates/js/jqcolor.js'></script>
+<script type='text/javascript' src='templates/js/jquery.cookie-1.4.1.min.js'></script>
+<script type='text/javascript' src='templates/js/setCookieFunc.js'></script>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>  
 </head>
 <body>
@@ -30,6 +32,8 @@ echo $title.' - МПЗИС-'.date('Y');
 </div>
 </div>
 <div class='main_links'>
+  <a href='javascript:setCookieRu()' class='flag_ru'></a>
+  <a href='javascript:setCookieUa()' class='flag_ua'></a>
   <a href='#' class='home'></a>
   <a href='contacts/' class='contacts'></a>
 </div>
