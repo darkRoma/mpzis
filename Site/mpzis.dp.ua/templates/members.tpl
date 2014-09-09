@@ -1,6 +1,6 @@
 <html>
 <head>
-<base href="http://mpzis.dp.ua">
+<base href="/">
 <link rel='stylesheet' href='templates/style/style.css' type='text/css'>
 <title>
 Учасники - МПЗИС-
