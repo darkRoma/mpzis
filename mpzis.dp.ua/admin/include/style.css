@@ -1,0 +1,40 @@
+#edit{
+  float: left;
+  width: 100px;
+  text-align: center;
+}
+a{
+  font-size: 10px;
+}
+img{
+  float: left;
+  margin-left: 5px;
+  width: 16px;
+  height: 16px;
+  border: 0px;
+  margin-bottom: -4px;
+  margin-right: 2px;
+}
+.login{
+  width: 362px;
+  height: 100px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -131px;
+  margin-top: -50px;
+}
+
+input{
+  float: left;
+  text-align: center;
+  width: 100px;
+}
+.error{
+  color: #ff0000;
+  font-size: 12px;
+  clear: both;
+  margin-bottom: 5px;
+}
+
+

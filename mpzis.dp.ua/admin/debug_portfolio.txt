@@ -1,0 +1,47 @@
+<a class='rounded {trancparent} portfolios_create_new' href='javascript: void(0)' onclick='xajax_parser(["tpl_path","obj","cmd","page"],
+																["../templates/clients.tpl","portfolio","add","clients"]);'>
+			Создать новую
+			</a><a href='javascript: void(0)' onclick='xajax_parser(["tpl_path","page"],["../templates/clients.tpl","clients"]);'>Все статьи</a><div class="left_pane_port"><div class='art_article true'><div class = "editable" id='39.v1'><a href ='javascript: void(0)' onclick='xajax_parser(["tpl_path","page","port"],
+																	["../templates/clients.tpl","clients","6"]);'>Интернет-магазин «mp4.dp.ua»</a></div><div class='clear'></div><div class = "editable right" id='39.v5'></div>
+<div class = "editable right cat" id='39.v6'></div>
+<a class='article_delete delete' title='xajax_parser(["tpl_path","cmd","page","lid"],["../templates/clients.tpl","delete","clients","6"]);' href='javascript: void(0)'>
+					Удалить</a><div class='clear'></div>
+				<a href='javascript: void(0)' class='article_edit' onclick='xajax_parser(["tpl_path","cmd","page","lid"],
+																	["../templates/clients.tpl","edit","clients","6"]);'>
+				Редактировать</a>
+				</div><div class='art_article true'><div class = "editable" id='38.v1'><a href ='javascript: void(0)' onclick='xajax_parser(["tpl_path","page","port"],
+																	["../templates/clients.tpl","clients","5"]);'>Сайт «101ball.com»</a></div><div class='clear'></div><div class = "editable right" id='38.v5'></div>
+<div class = "editable right cat" id='38.v6'></div>
+<a class='article_delete delete' title='xajax_parser(["tpl_path","cmd","page","lid"],["../templates/clients.tpl","delete","clients","5"]);' href='javascript: void(0)'>
+					Удалить</a><div class='clear'></div>
+				<a href='javascript: void(0)' class='article_edit' onclick='xajax_parser(["tpl_path","cmd","page","lid"],
+																	["../templates/clients.tpl","edit","clients","5"]);'>
+				Редактировать</a>
+				</div><div class='art_article true'><div class = "editable" id='37.v1'><a href ='javascript: void(0)' onclick='xajax_parser(["tpl_path","page","port"],
+																	["../templates/clients.tpl","clients","4"]);'>Интернет-магазин «pcmag.dp.ua»</a></div><div class='clear'></div><div class = "editable right" id='37.v5'></div>
+<div class = "editable right cat" id='37.v6'></div>
+<a class='article_delete delete' title='xajax_parser(["tpl_path","cmd","page","lid"],["../templates/clients.tpl","delete","clients","4"]);' href='javascript: void(0)'>
+					Удалить</a><div class='clear'></div>
+				<a href='javascript: void(0)' class='article_edit' onclick='xajax_parser(["tpl_path","cmd","page","lid"],
+																	["../templates/clients.tpl","edit","clients","4"]);'>
+				Редактировать</a>
+				</div><div class='art_article true'><div class = "editable" id='36.v1'><a href ='javascript: void(0)' onclick='xajax_parser(["tpl_path","page","port"],
+																	["../templates/clients.tpl","clients","3"]);'>Частный сайт 9-й школы г. Днепропетровска</a></div><div class='clear'></div><div class = "editable right" id='36.v5'></div>
+<div class = "editable right cat" id='36.v6'></div>
+<a class='article_delete delete' title='xajax_parser(["tpl_path","cmd","page","lid"],["../templates/clients.tpl","delete","clients","3"]);' href='javascript: void(0)'>
+					Удалить</a><div class='clear'></div>
+				<a href='javascript: void(0)' class='article_edit' onclick='xajax_parser(["tpl_path","cmd","page","lid"],
+																	["../templates/clients.tpl","edit","clients","3"]);'>
+				Редактировать</a>
+				</div><div class='art_article true'><div class = "editable" id='35.v1'><a href ='javascript: void(0)' onclick='xajax_parser(["tpl_path","page","port"],
+																	["../templates/clients.tpl","clients","2"]);'>Сайт кафедры «Вычислительной математики и математической кибернетики» ФПМ ДНУ</a></div><div class='clear'></div><div class = "editable right" id='35.v5'></div>
+<div class = "editable right cat" id='35.v6'></div>
+<a class='article_delete delete' title='xajax_parser(["tpl_path","cmd","page","lid"],["../templates/clients.tpl","delete","clients","2"]);' href='javascript: void(0)'>
+					Удалить</a><div class='clear'></div>
+				<a href='javascript: void(0)' class='article_edit' onclick='xajax_parser(["tpl_path","cmd","page","lid"],
+																	["../templates/clients.tpl","edit","clients","2"]);'>
+				Редактировать</a>
+				</div></div><span class = "port_search">
+<a>1</a></span>
+<span class = "port_search">
+<a href='javascript: void(0)' onclick='xajax_parser(["tpl_path","page","pos"],["../templates/clients.tpl","clients","1"]);'>2</a></span>

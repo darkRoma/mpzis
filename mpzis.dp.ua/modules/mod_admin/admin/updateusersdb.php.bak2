@@ -1,0 +1,442 @@
+<?php
+		
+		//id 	login 	pass 	access 	e-mail 	fio 	photo
+		
+/*----------------------- adds new user into tab users -------------------------------------------------*/
+/*--------------------- ¬ÕŒ—»“ »«Ã≈Õ≈Õ»ﬂ ¬ ¡ƒ(USERS) ƒÀﬂ  ŒÕ –“ÕŒ√Œ œŒÀ‹«Œ¬¿“≈Àﬂ -----------------------*/
+	function adm_adm_update__($login,$pass,$rpass,$access,$email,$fio,$photo,$result,$flag,$id)
+	{
+		$eng = new Engine();
+		$c_args = $eng->InitConf("conf.ini");
+
+		$sql = new cMysql($c_args["sql_host"],$c_args["sql_db"],$c_args["sql_login"],$c_args["sql_pass"]);
+		$table = $c_args["sql_users_tab"];
+		
+		$succ = true;
+/*--------------------- CHECK RIGHT INPUT ------------------------------------------*/
+		
+		if($login == "")
+		{
+			$out .= "You must fill all neccery fields<br>\n";
+			$succ = false;
+		}
+		if ($pass=="" or $rpass == "") {
+  			if( $flag == 'new' ){
+				$out .= "You must fill all neccery fields<br>\n";
+				$succ = false;
+			}
+  		}
+		
+		
+		if($pass != $rpass){
+			if( $flag == 'new' ){
+				$out .= "Wrong pass<br>\n";
+				$succ = false;
+			}
+		}
+		if($email != '')
+		{
+			if(!ereg(".+@.+\..+", $email)) {
+				$out .= "E-mail is incorrect<br>Exapl:name@chili.co<br>\n";
+				$succ = false;
+			}
+		}
+		
+		
+		/*---------------------------- ADD TO DB ---------------------------------------------*/
+		//id 	login 	pass 	access 	e-mail 	fio 	photo
+		if( $succ )
+		{
+			
+			if($pass != "")		$pass = MD5($pass);
+			
+			if($flag == 'new')
+			{
+				//$s = "SELECT MAX(id) FROM $table";
+		    	//$ret  = $sql->query($s,1);
+		    		
+		    	$id = $ret['id'] +1;
+			
+				$s = "INSERT INTO `$table` (`id`, `login`, `pass`, `access`, `e-mail`,`fio`,`photo` )
+							VALUES ('', '$login', '$pass', '$access', '$email','$fio','$photo')";
+			
+			    $ret = $sql->query($s);
+			    
+			    //----------------------------- STATISTIC ----------------------------------------------------//
+				/*
+				$arg = $eng->PrepareStatArgs('admin','user_new',array( "v1" => $_SESSION['login'],
+																		 "v2" => $login,
+																		 "v3" => $fio,
+																		 "v4" => $access,
+																		 "v5" => "",
+																		 "v6" => "",
+																		 "v7" => "",
+																		 "v8" => date("Y-d-m")
+																		 ));
+				adm_stat_AddToDB($arg);
+				*/
+			    //$out .= "User successfuly added to db<br>\n";
+		    }else /*------------------------------- Edit record   --------------------------------------*/
+		    {
+		    	if($pass != ""){
+		    		$out .= "pass`$pass`";
+		    		
+		    		$s = "UPDATE $table SET `login` = '$login', `pass` = '$pass',`access`='$access',
+											`e-mail`='$email',`fio`='$fio',`photo`='$photo'
+    		  			WHERE `id` = '$id'";
+    		  			if($_SESSION['id'] == $id) UpdateSession($login,$pass,$access,$email,$fio,$photo);
+		    	}else{
+		    		$s = "UPDATE $table SET `login` = '$login',`access`='$access',
+											`e-mail`='$email',`fio`='$fio',`photo`='$photo'
+    		  			WHERE `id` = '$id'";	
+    		  			if($_SESSION['id'] == $id) UpdateSession($login,0,$access,$email,$fio,$photo);
+		    	}
+
+    		  $ret = $sql->query($s);
+    		//----------------------------- STATISTIC ----------------------------------------------------//
+				/*
+				$arg = $eng->PrepareStatArgs('admin','user_edit',array( "v1" => $_SESSION['login'],
+																		 "v2" => $login,
+																		 "v3" => $fio,
+																		 "v4" => $access,
+																		 "v5" => "",
+																		 "v6" => "",
+																		 "v7" => "",
+																		 "v8" => date("Y-d-m")
+																		 ));
+				adm_stat_AddToDB($arg);
+				*/
+				$u['changed'] = $id;
+		    }
+			
+			$u['result'] = $result;
+	    	$ret .= adm_adm_ShowUsers($u);
+	    }
+	    
+	    
+	    
+		$obj = new xajaxResponse();
+		//$obj->addalert('xajax_parser([\'cmd\',\'obj\'],[\'users\',\'admin\']);');
+		$obj->addassign($result,"innerHTML",$out.$ret);
+		return $obj;
+	}
+	/*------------ echo new user form ---------------------*/
+	function is_pic($fn)
+	{
+    $fnar=explode('.', $fn);
+    if($fnar[1]=='.gif' || $fnar[1]=='.jpg' || $fnar[1]=='.jpeg' ||$fnar[1]=='.png' ){return true;}
+    else {return false;}
+  }
+	function adm_adm_AddNewUserForm($result)
+	{	
+		$eng 	= new Engine();
+		$c 		= $eng->InitConf("conf.ini");
+		
+		$sql = new cMysql($c["sql_host"],$c["sql_db"],$c["sql_login"],$c["sql_pass"]);
+		$tab = $c["sql_struct_tab"];
+/*----------------------------------------- PICTURES UPLOADER ------------------------------------------------*/
+			$out .= "
+			
+				<div id='picture'>
+					<img src='' id='n_pic'>
+					<br><a href='javascript: void(0)' onclick='chiliadmShowPicSelect();'>–ù–∞—Å—Ç—Ä–æ–∏—Ç—å</a>
+				</div>
+				<div id='picsSelector' style='display: none' >
+					<div id='pics'>";
+/*----------------------------------- GET LODED PICTURES INTO LIST ------------------------------------------*/	
+				$s = "SELECT `c_value` FROM $tab WHERE `c_id` = 'users_path'";
+				$ret = $sql->query($s,true);
+				
+				 $h   = opendir("../$ret[c_value]");
+						
+				$i=1;
+				while ( $file = readdir($h) )
+				{
+					if(!is_dir($file) && !is_pic($file))
+						$out .="<img src='../$ret[c_value]/$file' id=$i>";
+				}
+			
+					
+/*----------------------------------- END GET LODED PICTURES INTO LIST ------------------------------------------*/						
+			$out .="
+						
+					</div>
+					<div id=settings>sets go here
+					<input type='text' id='art_prev_pic_URL'>
+					</div>
+					<div id='uploader'>
+						<iframe src='http://101ball.com/modules/mod_admin/admin/upload.php' id='frame' name='ffr'></iframe>
+						<form enctype='multipart/form-data' action='admin_admin/upload.php' method='post' id='uplForm'>
+							<input type='file' name='file'>
+							<input type='submit'>
+						</form>
+					</div>
+				</div>
+						
+				
+				";
+			
+/*--------------------------------- END PICTURES UPLOADER ------------------------------------------------*/
+		//id 	login 	pass 	access 	e-mail 	fio 	photo
+		$out.= "Login*:";
+		$out.= "<input type=\"text\" id=\"n_login\"/><br>";
+		$out.= "Pass*:";
+		$out.= "<input type=\"text\" id=\"n_pass\"/><br>";
+		$out.= "Repeat pass*:";
+		$out.= "<input type=\"text\" id=\"n_rep_pass\"/><br>";
+		
+		$out.= "Rights*:";
+		$out.= "<select size=\"1\" id=\"n_access\">";
+		$out.= "	<option value=\"Admin\">Admin</option>";
+		$out.= "	<option value=\"Generaleditor\">Generaleditor</option>";
+		$out.= "	<option value=\"Editor\" selected>Editor</option>";
+		$out.= "</select><br>";
+				
+		$out.= "E-mail:";
+		$out.= "<input type=\"text\" id=\"n_email\"/><br>";
+		
+		$out.= "Fio:";
+		$out.= "<input type=\"text\" id=\"n_fio\"/><br>";
+		
+		//	function adm_adm_update__($login,$pass,$rpass,$access,$email,$fio,$photo,$result)
+		$inp = "document.getElementById('n_login').value,
+				document.getElementById('n_pass').value,
+				document.getElementById('n_rep_pass').value,
+				document.getElementById('n_access').value,
+				document.getElementById('n_email').value,
+				document.getElementById('n_fio').value,
+				document.getElementById('n_pic').src,
+				'$result','new',0";
+		
+		$l = "href='javascript: void(0)' onclick=\"xajax_adm_adm_update__($inp);\"";
+		$out	.= "<a $l>New user</a><br>";	
+		
+		
+		$obj = new xajaxResponse();
+		$obj->addassign($result,"innerHTML",$out);
+		
+		return $obj;
+	}
+	
+
+/*----------------------------- !!!!!!!!!!!!!!!!!!!!!!!! ---------------------------------------------*/
+/*----------------------------- EDIT USER(id) from users ---------------------------------------------*/
+	
+/*-------------------------- ¬€¬Œƒ»“ ‘Œ–Ã” ƒÀﬂ »«Ã≈Õ≈Õ»ﬂ ƒ¿ÕÕ€’ œŒÀ‹«Œ¬¿“≈Àﬂ -------------------------*/
+	function adm_adm_EditUserForm($id,$result)
+	{
+		$eng 	= new Engine();
+		$c 		= $eng->InitConf("conf.ini");
+		
+		$sql = new cMysql($c["sql_host"],$c["sql_db"],$c["sql_login"],$c["sql_pass"]);
+		$tab = $c["sql_struct_tab"];
+		$tab2 = $c["sql_users_tab"];
+		
+		$s = "SELECT * FROM $tab2 WHERE `id`='$id'";
+		$row = $sql->query($s,true);
+		//id 	login 	pass 	access 	e-mail 	fio 	photo
+		
+/*----------------------------------------- PICTURES UPLOADER ------------------------------------------------*/
+			$out .= "
+			
+				<div id='picture'>
+					<img src='".$row['photo']."' id='n_pic'>
+					<br><a href='javascript: void(0)' onclick='chiliadmShowPicSelect();'>–ù–∞—Å—Ç—Ä–æ–∏—Ç—å</a>
+				</div>
+				<div id='picsSelector' style='display: none' >
+					<div id='pics'>";
+/*----------------------------------- GET LODED PICTURES INTO LIST ------------------------------------------*/	
+				$s = "SELECT `c_value` FROM $tab WHERE `c_id` = 'users_path'";
+				$ret = $sql->query($s,true);
+				
+				 $h   = opendir("../$ret[c_value]");
+						
+				$i=1;
+				while ( $file = readdir($h) )
+				{
+					if(!is_dir($file))
+						$out .="<img src='../$ret[c_value]/$file' id=$i>";
+				}
+			
+					
+/*----------------------------------- END GET LODED PICTURES INTO LIST ------------------------------------------*/						
+			$out .="
+						
+					</div>
+					<div id=settings>sets go here
+					<input type='text' id='art_prev_pic_URL'>
+					</div>
+					<div id='uploader'>
+						<iframe src=''id='frame' name='ffr'></iframe>
+						<form enctype='multipart/form-data' action='admin_admin/upload.php' method='post' id='uplForm'>
+							<input type='file' name='file'>
+							<input type='submit'>
+						</form>
+					</div>
+				</div>
+						
+				
+				";
+			
+/*--------------------------------- END PICTURES UPLOADER ------------------------------------------------*/
+/*--------------------------------- ECHO DATA FOR EDIT ---------------------------------------------------*/
+     	//id 	login 	pass 	access 	e-mail 	fio 	photo
+		$out.= "Login:";
+		$out.= "<input type=\"text\" id=\"n_login\" value='".$row['login']."'/><br>";
+		$out.= "Pass:";
+		$out.= "<input type=\"text\" id=\"n_pass\"/><br>";
+		$out.= "Repeat pass:";
+		$out.= "<input type=\"text\" id=\"n_rep_pass\"/><br>";
+		
+		$out.= "Fio:";
+		$out.= "<input type=\"text\" id=\"n_fio\" value='".$row['fio']."'/><br>";
+		
+		$out.= "Rights:";
+		if($_SESSION['access'] == 'Admin')
+		{
+			$out.= "<select size=\"1\" id=\"n_access\">";
+			
+			if($row['access'] == 'Admin') $out.= "	<option value=\"Admin\" selected>Admin</option>";
+			else 						$out.= "	<option value=\"Admin\">Admin</option>";
+			
+			if($row['access'] == 'Generaleditor') 	$out.= "<option value=\"Generaleditor\" selected>Generaleditor</option>";
+			else							$out.= "	<option value=\"Generaleditor\">Generaleditor</option>";
+			if($row['access'] == 'Editor')	$out.= "	<option value=\"Editor\" selected>Editor</option>";
+			else							$out.= "	<option value=\"Editor\">Editor</option>";
+			
+			$out.= "</select><br>";
+		}else{
+			 $out.= "<input type=\"text\" id=\"n_access\" disabled value=".$row['access']."><br>"; 
+		}		
+		$out.= "E-mail:";
+		$out.= "<input type=\"text\" id=\"n_email\" value='".$row['e-mail']."'/><br>";
+		
+
+		
+		//	function xajax_adm_adm_update__($login,$pass,$rpass,$access,$email,$fio,$photo,$result)
+		$inp = "document.getElementById('n_login').value,
+				document.getElementById('n_pass').value,
+				document.getElementById('n_rep_pass').value,
+				document.getElementById('n_access').value,
+				document.getElementById('n_email').value,
+				document.getElementById('n_fio').value,
+				document.getElementById('n_pic').src,
+				'$result','edit',".$row['id']."";
+		
+		$l = "href='javascript: void(0)' onclick=\"xajax_adm_adm_update__($inp);\"";
+		$out	.= "<a $l>Save changes</a><br>";	
+		
+		 
+		 
+		 
+		$obj = new xajaxResponse();
+		$obj->addassign($result,"innerHTML",$out); 
+		return $obj;		
+	}
+	
+	
+	
+	/*DELETE user(id) from users*/
+	function adm_adm_DeleteUser($id,$result)
+	{
+		$eng = new Engine;
+		$c = $eng->InitConf("conf.ini");
+		
+		$sql = new cMysql($c["sql_host"],$c["sql_db"],$c["sql_login"],$c["sql_pass"]);
+		$tab = $c["sql_users_tab"];
+     	
+     	$s = "DELETE FROM $tab WHERE `id` = '$id'";
+		 
+		$sql->query($s);
+	//----------------------------- STATISTIC ----------------------------------------------------//
+		/*
+		$arg = $eng->PrepareStatArgs('admin','user_delete',array( "v1" => $_SESSION['login'],
+																		"v2" => $id,
+																		"v3" => "",
+																		"v4" => "",
+																		"v5" => "",
+																		"v6" => "",
+																		"v7" => "",
+																		"v8" => date("Y-d-m")
+																		));
+		adm_stat_AddToDB($arg);*/
+	//----------------------------- END STATISTIC ----------------------------------------------------//	
+		 
+		$obj = new xajaxResponse();
+		$obj->addassign($result,'innerHTML',"User deleted");
+		//$obj->addalert($s);
+		return $obj;			
+	}
+	
+	/*¬˚‚Ó‰ËÚ Ú‡·ÎËˆÛ ÔÓÎ¸ÁÓ‚‡ÚÂÎÂÈ*/	
+	function adm_adm_ShowUsers($u)
+	{
+		$eng = new Engine;
+		$c = $eng->InitConf("conf.ini");
+		
+		$sql = new cMysql($c["sql_host"],$c["sql_db"],$c["sql_login"],$c["sql_pass"]);
+		$tab = $c["sql_users_tab"];
+		
+		$s = "SELECT * FROM $tab WHERE 1";
+		
+		$ret = $sql->query($s);
+		
+		//id	login	pass	access	e-mail	fio	photo
+		
+		$out .= "<div class = 'all_users'>";
+		while($row = mysql_fetch_assoc($ret))
+		{
+			if ($row['id'] == $u['changed']) {
+   			$out .= "***Changed***<br>";
+   			}
+			$out .="<div class='adm_photo'> <img src ='". $row['photo']."'</div>";
+			$out .="<div class='adm_fio'> "	 . 	$row["fio"]		."</div>";
+			$out .="<div class='adm_login'>" . 	$row["login"]	."</div>";
+			$out .="<div class='adm_access'>". 	$row["access"]	."</div>";
+			$out .="<div class='adm_e-mail'>". 	$row["e-mail"]	."</div>";
+			
+			/*--------------------ADMIN MENU---------------------------*/
+			switch($_SESSION['access'])
+			{
+				case "Admin":
+				{
+					$l = "'javascript: void(0)' onclick='xajax_adm_adm_EditUserForm(\"".$row["id"]."\",
+																			\"".$u["result"]."\");'";
+					$out .="<a href=$l>Edit</a>";
+					//function adm_adm_DeleteUser($id,$result)
+					$l = "'javascript: void(0)' onclick='xajax_adm_adm_DeleteUser(\"".$row["id"]."\",
+																			\"".$u["result"]."\");'";
+					$out .="<a href=$l>Delete</a>";
+					break;	
+				}
+				
+				default:
+				{
+					if($_SESSION['login'] == $row["login"])
+					{
+						$l = "'javascript: void(0)' onclick='xajax_adm_adm_EditUserForm(\"".$row["id"]."\",
+																			\"".$u["result"]."\");'";
+						$out .="<a href=$l>Edit</a>";	
+					}
+				}	
+			}
+			
+			$out .= "<hr>";
+	
+		}
+		$out .= "</div>";
+		
+		return $out;
+	}
+	
+	function UpdateSession($login,$pass,$access,$email,$fio,$photo)
+	{
+		$_SESSION['login']	=$login;
+	 	if($pass) 
+		 	$_SESSION['pass']=$pass;
+	    $_SESSION['access']	=$access;
+	    $_SESSION['e-mail']	=$email;
+	    $_SESSION['fio']	=$fio;
+	    $_SESSION['photo']	=$photo;
+	}
+?>

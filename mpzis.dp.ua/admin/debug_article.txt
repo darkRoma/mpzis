@@ -1,0 +1,68 @@
+<a class='rounded {trancparent} articles_create_new' href='javascript: void(0)' onclick='xajax_parser(["tpl_path","cmd","page"],
+																["../templates/info.tpl","add","info"]);'>
+			Создать новую
+			</a><a href='javascript: void(0)' onclick='xajax_parser(["tpl_path","page"],["../templates/info.tpl","info"]);'>Все статьи</a>
+			
+				<div id='picture'>
+					<img src='../../../upload/img/default.jpg' id='art_prev_pic'>
+					<br><a href='javascript: void(0)' onclick='chiliShowPicSelect();'>Настроить</a>
+				</div>
+				<div id='picsSelector' style='display: none' >
+					<div id='pics'><img src='../upload/img/ba92cf2f3c1252ca4abcc757a78277b9.png' id=1><img src='../upload/img/bd61d2ced064af7b758f89486787a5af.png' id=2><img src='../upload/img/26594ca1162145e9bf4927c158b6ebd7.png' id=3><img src='../upload/img/3b309540404ccea506d9b80a0a067679.png' id=4><img src='../upload/img/61a4ecf972d09ac75dceb3d25eb765b5.png' id=5><img src='../upload/img/d5112521d47812e54f4e18ded7fdca0b.png' id=6><img src='../upload/img/3ce50418c4c994b2e579e7e73657e987.png' id=7><img src='../upload/img/64afdad5ea397fbecf86bbb6f036e191.png' id=8><img src='../upload/img/a1cf73c19fc10d1a4ab1fb83ced1fb5e.png' id=9><img src='../upload/img/folder_image.png' id=10><img src='../upload/img/780f213404664e042298456fa5346fe2.png' id=11><img src='../upload/img/f9396d1f058ab8224e0fdc443e08ba12.png' id=12><img src='../upload/img/f4b013661250e4a7d64071e1b75fb6aa.png' id=13><img src='../upload/img/51b5e3dcf544e68f933190be7ec19c7a.png' id=14><img src='../upload/img/75a507843afa62dc821a2168456b7388.png' id=15><img src='../upload/img/94351a0b292181e1671bc6c7036aa50c.png' id=16><img src='../upload/img/3a3dbce7577fbb25352bcffbc469b3ef.png' id=17><img src='../upload/img/84ebd1704847f9a97d17a9165e16f577.png' id=18><img src='../upload/img/240ee437042c72840ad06a89e5c76875.png' id=19><img src='../upload/img/ada913c8a819f523cc59847f1d2325aa.png' id=20><img src='../upload/img/8cfda67b07f6bb1c8cb53b61b2d6ed14.png' id=21><img src='../upload/img/6fbfbbdbed3cddf40378ef80526ccc3f.png' id=22><img src='../upload/img/eec68595a75259da065174308ce79775.png' id=23><img src='../upload/img/0ab73fd9179d0262ba4385960d4ad208.png' id=24><img src='../upload/img/a272981481a9c8a4fcc89a2201828824.png' id=25><img src='../upload/img/9cc530be0c560a86b9d9a7033b052125.png' id=26><img src='../upload/img/a96b8a5795f4058d7fabd286335a097a.png' id=27><img src='../upload/img/ddd07937f3b414ce2c5a05fbe9c8eeab.png' id=28><img src='../upload/img/c79c5498b9fdef503ecdedac435c59df.png' id=29><img src='../upload/img/a4ef429786ef40dd5497968b945fefa7.png' id=30><img src='../upload/img/ee425c5cf27cf5623944b6ec2e411bee.png' id=31><img src='../upload/img/f8bc10967cdb45d28b916a2fa2030f80.png' id=32><img src='../upload/img/aa18d2978bdd642b8ee3ae4bc2587b39.png' id=33><img src='../upload/img/a24522e9bde52a2998cbbe30aa433ed3.png' id=34><img src='../upload/img/a755ec6d3dae58b0e977c5f57960aeb4.png' id=35><img src='../upload/img/3bc97cc8745e55201cec1fcd5d891ffb.png' id=36><img src='../upload/img/2da4954a1bfd0c5ab32aea16254a5588.png' id=37><img src='../upload/img/sites.jpg' id=38><img src='../upload/img/3b9250273f915cde5a49a627d640af42.png' id=39><img src='../upload/img/tellet.jpg' id=40><img src='../upload/img/a49d2fe174fe430a154adc00894782bd.png' id=41><img src='../upload/img/91769dc73fcb6244db0fd40eea0cd49e.png' id=42><img src='../upload/img/728cba1c6b24bef1cf28a5b1582e2bce.png' id=43><img src='../upload/img/15338fd7457b84c527330e87daa3ca2b.png' id=44><img src='../upload/img/0113991837698d57ec473ac7a2c9d9aa.png' id=45><img src='../upload/img/ba4cdc8be9a921e3a32f8bd9753ab74e.png' id=46><img src='../upload/img/6c0b0b365b47a281f529099cbf072b42.png' id=47><img src='../upload/img/e3ac5b0cfe9f042a1a23bb6acf5f3fa2.png' id=48><img src='../upload/img/a86a7055d8e91d8123fea618047a07c3.png' id=49><img src='../upload/img/8b8f754bab9a68cc8a7a4a0e34a7aa2b.png' id=50><img src='../upload/img/2f428ea6b2b1e26b77c656d40e9169fc.jpg' id=51>
+						
+					</div>
+					<div id=settings>sets go here
+					<input type='text' id='art_prev_pic_URL'>
+					</div>
+					<div id='uploader'>
+						<iframe src=''id='frame' name='ffr'></iframe>
+						<form enctype='multipart/form-data' action='../modules/mod_article/admin/upload.php' method='post' id='uplForm'>
+							<input type='file' name='file'>
+							<input type='submit'>
+						</form>
+					</div>
+				</div>
+						
+				
+				
+<fieldset><legend>SEO</legend>
+<label for='adm_seo_title'>Заголовок:</label><input id='adm_seo_title' value=''><br />
+<label for='adm_seo_tags'>Тэги:</label><input id='adm_seo_tags' value=''><br />
+<label for='adm_seo_desc'>Описание:</label><input id='adm_seo_desc' value=''><br />
+</fieldset>
+<fieldset><legend>Изменить статью</legend><input id="page" type="hidden" value="info">
+<input id="lid" type="hidden" value="10">
+<label for='n_title'>Заголовок:</label><input id="n_title" type="text" value='Інформація про конференцію'><br>
+<label for='article_url' style='width: auto;'>http://mpzis.dp.ua/info/</label><input type='text' id='article_url' name='article_url' value='informaciya_pro_konferenciyu' title='Русские буквы не разрешены, и будут транслитерированы!'><div class='clear'></div><label for='article_visibility'><input type='checkbox' id='article_visibility' name='article_visibility' checked> показвать статью</label><textarea id="n_text" name="n_text" rows=30 cols=50 wrap="off"><p><strong>Шановнi колеги!</strong></p>
+<p>Запрошуємо Вас взяти участь у роботi <strong>ХІІ Мiжнародної науково-практичної конференцiї Математичне і програмне забечення інтелектуальних систем </strong>(MPZIS-2014), яка вiдбудеться 19 - 21 листопада 2014 року у Палацi студентiв Днiпропетровського нацiонального унiверситета імені Олеся Гончара.<br />
+До участi у конференцiї запрошуються студенти, молодi науковцi, викладачi вузiв, фахiвцi з iнтелектуальних систем.</p>
+<p>На конференцiї будуть працювати такi секцiї:</p>
+<ol>
+    <li>Нейронечiткi технологiї</li>
+    <li>Експертнi системи та системи, що навчають</li>
+    <li>Математичне i програмне забезпечення систем штучного iнтелекту</li>
+    <li>Iнтелектуальнi системи прийняття рiшень i системи пiдтримки прийняття рiшень у технiчних i економiчних системах управлiння та у бiзнесi</li>
+    <li>Iнженерiя знань</li>
+    <li>Кластерізація і розпiзнавання образiв</li>
+    <li>Використання iнтелектуальних систем у навчальному процесi.</li>
+    <li>Інформаційні технології обробки даних для прийняття рішень.</li>
+    <li><span lang="UK" style="font-size:10.0pt">Системний   аналіз складних систем різної природи</span></li>
+</ol>
+<p>Бажаючих взяти участь у роботi конференцiї просимо заповнити реєстрацiйну картку (бланк додається). Для включення доповiдi до програми конференцiї необхiдно до 1 листопада 2014 року надiслати тези доповiдi, якi будуть опублiкованi окремою збiркою до початку роботи конференцiї та виданi учасникам конференцiї.<br />
+Статтi за результатами доповiдi можна надiслати пiзнiше або передати до оргкомiтету безпосередньо пiд час конференцiї. Кращi статтi будуть опублiкованi пiсля закiнчення роботи конференцiї у черговому випуску збiрника наукових праць &quot;ПИТАННЯ ПРИКЛАДНОЇ МАТЕМАТИКИ I МАТЕМАТИЧНОГО МОДЕЛЮВАННЯ&quot;, що входить до затвердженого ВАК України Перелiку наукових видань. До статтi необхiдно додати рецензiю доктора наук. Вимоги до оформлення тез містяться на сайті http://www. mpzis.dp.ua.<br />
+При потребi можливе бронювання мiсць у готелi або гуртожитку. Вартiсть проживання та бронi учасники сплачують самостiйно. Просимо потурбуватися про квитки на зворотну дорогу.</p>
+<p style="text-align: left;">СПОДIВАЄМОСЯ НА ВАШУ УЧАСТЬ У КОНФЕРЕНЦIЇ!</p>
+<p style="text-align: right;">З повагою, оргкомiтет.</p>
+<p style="text-align: right;"><a href="/upload/mpzis_2011.doc">Завантажити лист</a><a href="/upload/mpzis_2009.doc"><br />
+</a></p></textarea><br>
+<label for='n_date'>Дата:</label><input id="n_date" type="text" value='2010-01-06'><br>
+<label for='n_category'>Категория:</label><input id="n_category" type="text" value=''><br>
+<a class='rounded' href='javascript: void(0)' onclick="var oEditor = FCKeditorAPI.GetInstance('n_text'); var text=oEditor.GetXHTML( true ); xajax_adm_art_UpdateDB('edit','info',document.getElementById('art_prev_pic_URL').value,
+								document.getElementById('n_title').value,
+								text,
+								document.getElementById('n_category').value,
+								document.getElementById('n_date').value,
+								document.getElementById('tpl_path').innerHTML,
+								document.getElementById('lid').value,
+                document.getElementById('article_visibility').checked,
+                document.getElementById('article_url').value,document.getElementById('adm_seo_title').value,document.getElementById('adm_seo_desc').value,document.getElementById('adm_seo_tags').value);">Сохранить</a></fieldset>

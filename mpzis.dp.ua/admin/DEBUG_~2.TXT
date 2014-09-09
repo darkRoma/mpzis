@@ -1,0 +1,3 @@
+U([obj]=>`admin` 
+[result]=>`res_out` 
+<br><a href='javascript: void(0)' onclick='xajax_parser(["cmd","obj"],["users","admin"]);'>Users</a><br><a href='javascript: void(0)' onclick='xajax_parser(["cmd","obj"],["struct","admin"]);'>Struct table</a><br>

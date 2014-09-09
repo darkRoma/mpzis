@@ -1,0 +1,6 @@
+<Limit GET POST>
+	require valid-user
+</Limit>
+AuthType Basic
+AuthName "webstat"
+AuthUserFile /var/www/mpzis/data/etc/mpzis.dp.ua.stat.passwd
