@@ -49,7 +49,7 @@ echo 'МПЗИС-'.date('Y');
 <div class='clear'></div>
 <div>
     <div class='left_1'>
-    <h1>Організатори</h1>
+    <h1>Организаторы</h1>
     <div><img  style='vertical-align: middle;margin-right: 5px;' src='templates/style/img/logo.gif' width=44 height=44 border=0><a href='orgonizers/dnu/'>Днепропетровский национальный  
 университет им. О. Гончара</a></div>
 <div><img  src='http://www.dasd.com.ua/images/logo_inst.gif' width=44 height=44 border=0 style='vertical-align: middle;margin-right: 5px;'><a href='orgonizers/ikg/'>Институт кибернетики им. В.М. Глушкова 
