@@ -27,9 +27,9 @@ echo date('Y');
         map.addOverlay(marker);
         map.addControl(new GLargeMapControl());
         GEvent.addListener(marker, "click", function() {
-  			map.openInfoWindowHtml(coords, '<b>МПЗІС-2009</b><br>Місце знаходження: Палац студентів ДНУ ім. О. Гончара'); 
+  			map.openInfoWindowHtml(coords, '<b>МПЗІС-2014</b><br>Место расположения: Дворец студентов им. О. Гончара'); 
 		});
-        map.openInfoWindowHtml(coords, '<b>МПЗІС-2009</b><br>Місце знаходження: Палац студентів ДНУ ім. О. Гончара'); 
+        map.openInfoWindowHtml(coords, '<b>МПЗІС-2014</b><br>Место расположения: Дворец студентов им. О. Гончара'); 
       }
     }
  
@@ -39,9 +39,9 @@ echo date('Y');
 <body>
 <div class='header'><a href='#' class='logo'></a>
 <div class='years'></div>
-<div class='title'><span class='row1'><span id='noc'></span>Міжнародна науково-практична конференція</span>
-<span class='row2'>«Математичне і програмне забезпечення</span>
-<span class='row3'>інтелектуальних систем»</span>
+<div class='title'><span class='row1'><span id='noc'></span>Международная научно-практическая конференция</span>
+<span class='row2'>«Математическое и программное обеспечение</span>
+<span class='row3'>интеллектуальных систем»</span>
 </div>
 </div>
 <div class='main_links'>
@@ -51,12 +51,12 @@ echo date('Y');
   <a href='contacts/' class='contacts'></a>
 </div>
 <ul class='small_links'>
-<li><a href='register/'>Взяти участь</a></li>
-<li><a href='conditions/'>Умови участі</a></li>
-<li><a href='members/'>Учасники</a></li>
-<li><a href='program/'>Програма</a></li>
-<li><a href='orgcommitee/'>Оргкомітет</a></li>
-<li><a href='archieve/'>Архів</a></li>
+<li><a href='register/'>Принять участие</a></li>
+<li><a href='conditions/'>Условия участия</a></li>
+<li><a href='members/'>Участники</a></li>
+<li><a href='program/'>Программа</a></li>
+<li><a href='orgcommitee/'>Оргкомитет</a></li>
+<li><a href='archieve/'>Архив</a></li>
 </ul>
 <div class='wrap_info'>
 [chili]article[/chili]
